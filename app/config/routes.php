@@ -8,6 +8,7 @@ use flight\net\Router;
 use app\controllers;
 use app\controllers\TypeBesoinController;
 use app\controllers\VilleController;
+use app\controllers\DashboardController;
 
 /** 
  * @var Router $router 
@@ -17,10 +18,15 @@ use app\controllers\VilleController;
 // This wraps all routes in the group with the SecurityHeadersMiddleware
 $router->group('', function(Router $router) use ($app) {
 
-	$router->get('/', function() use ($app) {
-		$app->render('index');
-	});
+	// $router->get('/', function() use ($app) {
+	// 	$app->render('index');
+	// });
+	
+		
+	$router->get('/', [DashboardController::class, 'index']);
+	$router->get('/index', [DashboardController::class, 'index']);
 
+	
 	$router->get('/test', function () {
 	$db = Flight::db();
 	var_dump($db->query("SELECT version()")->fetch());
@@ -76,6 +82,11 @@ $router->group('', function(Router $router) use ($app) {
 		$router->get('/users/@id:[0-9]', [ ApiExampleController::class, 'getUser' ]);
 		$router->post('/users/@id:[0-9]', [ ApiExampleController::class, 'updateUser' ]);
 	});
+
+
+	
+
+
 
 	
 }, [ SecurityHeadersMiddleware::class ]);
