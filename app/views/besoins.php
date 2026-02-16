@@ -1,6 +1,9 @@
 <?php
 $base_url = Flight::get('flight.base_url'); 
 
+<?php $base_url = Flight::get('flight.base_url'); 
+?>
+
 $page_title = "Gestion des Besoins - BNGRC";
 
 ob_start();
