@@ -12,15 +12,19 @@ class Ville{
     }
 
     public function insertVille($nom, $region){
-         $stmt = $this->db->prepare("INSERT INTO ville (nom, region) VALUES (:nom, :region)");
-        $stmt->bindParam(':nom', $nom);
-        $stmt->bindParam(':region', $region);
-        return $stmt->execute();
+         $stmt = $this->db->prepare("INSERT INTO ville (nom, region) VALUES (?,?)");
+        return $stmt->execute([$nom,$region]);
     }
 
     public function getAllVille(){
         $stmt = $this->db->query("SELECT * FROM ville");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function countVille() {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM ville");
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
     }
 }
 ?>

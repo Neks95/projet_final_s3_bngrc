@@ -49,6 +49,19 @@ $router->group('', function(Router $router) use ($app) {
 	$router->get('/hello-world/@name', function($name) {
 		echo '<h1>Hello world! Oh hey '.$name.'!</h1>';
 	});
+        $db = Flight::db();
+        var_dump($db->query("SELECT version()")->fetch());
+    });
+
+	$router->get('/villes', function () use ($app){
+        $app->render('villes');
+    });
+	
+	$router->get('/villes/ajouter', function () use ($app){
+        $app->render('ville-ajouter');
+    });
+
+	$router->post('/villes/ajouter', [ VilleController::class, 'insertVille' ]);
 
 	$router->group('/api', function() use ($router) {
 		$router->get('/users', [ ApiExampleController::class, 'getUsers' ]);

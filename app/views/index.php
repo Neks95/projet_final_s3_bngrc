@@ -1,4 +1,9 @@
-<?php $base = Flight::get('flight.base_url'); ?>
+<?php $base = Flight::get('flight.base_url'); 
+
+use app\controllers\VilleController;
+
+$villes = (new VilleController())->getAllVille();
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -33,7 +38,7 @@
                             <a class="nav-link">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link">Villes</a>
+                            <a href="<?=$base?>villes" class="nav-link">Villes</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link">Besoins</a>
