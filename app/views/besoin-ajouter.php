@@ -1,4 +1,9 @@
-<?php $base_url = Flight::get('flight.base_url'); ?>
+<?php 
+
+$base_url = Flight::get('flight.base_url'); 
+// var_dump($type);
+// var_dump($ville);
+?>
 
 
 <!DOCTYPE html>
@@ -79,7 +84,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="form-container">
-                        <form id="addBesoinForm" action="<?= $base_url ?>ajouter_besoin">
+                        <form id="addBesoinForm" action="<?= $base_url ?>ajouter_besoin" method="post">
                             <div class="mb-3">
                                 <label for="ville" class="form-label">
                                     Ville
@@ -87,7 +92,7 @@
                                 <select class="form-select" id="ville" name="ville" required>
                                     <option value="">Selectionner une ville</option>
                                     <?php foreach ($ville as $v) { ?>
-                                        <option value="<?= $v['id'] ?>"><?= $v['nom'] ?>?></option>
+                                        <option value="<?= $v['id'] ?>"><?= $v['nom'] ?></option>
                                     <?php } ?>
                                 </select>
                                 <div class="invalid-feedback">
@@ -102,11 +107,11 @@
                                 <select class="form-select" id="type" name="type" required>
                                     <option value="">Selectionner un type</option>
                                     <?php foreach ($type as $t) { ?>
-                                        <option value="<?= $t['id'] ?>"><?= $t['nom_type'] ?>?></option>
+                                        <option value="<?= $t['id'] ?>"><?= $t['nom_type'] ?></option>
                                     <?php } ?>
                                 </select>
                                 <div class="invalid-feedback">
-                                    Veuillez selectionner une ville.
+                                    Veuillez selectionner une type.
                                 </div>
                             </div>
 
@@ -122,7 +127,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6 mb-3">
+                                <!-- <div class="col-md-6 mb-3">
                                     <label for="prix_unitaire" class="form-label">
                                         Prix Unitaire (Ar)
                                     </label>
@@ -130,7 +135,7 @@
                                     <div class="invalid-feedback">
                                         Veuillez saisir un prix unitaire valide.
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-primary">

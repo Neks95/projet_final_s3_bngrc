@@ -18,6 +18,7 @@ class TypeBesoin {
     public function getAll(){
         $sql = "SELECT id,nom_type FROM type_besoin";
         $stmt = $this->db->prepare($sql);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

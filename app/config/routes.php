@@ -1,11 +1,11 @@
 <?php
 
 use app\controllers\ApiExampleController;
+use app\controllers\BesoinVilleController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
 use app\controllers;
-use app\controllers\BesoinVilleController;
 use app\controllers\TypeBesoinController;
 use app\controllers\VilleController;
 
@@ -29,29 +29,37 @@ $router->group('', function(Router $router) use ($app) {
 	$router->get('/gestion_besoin',function(){
 		$controller = new BesoinVilleController();
 		$besoin = $controller->getAllBesoin();
-		Flight::render('besoins',['liste_besoin' => $besoin]);
+		Flight::render('besoins',['besoin' => $besoin]);
 	});
 
-	$router->get('/ajout_besoin',function(){
-		$c1 = new VilleController();
-		$villes = $c1->getAllVille();
-		$c2 = new TypeBesoinController();
-		Flight::render('besoin-ajouter',
-		['ville' => $villes,'type' => $c2->getAlltype()]
-		);
-	});
+	$router->get('/ajout_besoin', function() {
 
-	$router->post('/inserer_besoin',function(){
+    $villeController = new VilleController();
+    $typeController  = new TypeBesoinController();
+
+    $villes = $villeController->getAllVille();
+    $types  = $typeController->getAllType();
+
+    Flight::render('besoin-ajouter', [
+        'type' => $types,
+        'ville'  => $villes
+    ]);
+});
+
+
+	
+
+	$router->post('/ajouter_besoin',function(){
+		$controller = new BesoinVilleController();
+		$controller->insererBesoin();
 		
-
+		
 	});
 
 	$router->get('/hello-world/@name', function($name) {
 		echo '<h1>Hello world! Oh hey '.$name.'!</h1>';
 	});
-        $db = Flight::db();
-        var_dump($db->query("SELECT version()")->fetch());
-    });
+       
 
 	$router->get('/villes', function () use ($app){
         $app->render('villes');

@@ -7,7 +7,23 @@ class BesoinVilleController{
 
     function getAllBesoin(){
         $model = new besoinVille(Flight::db());
-        return $besoins = $model->getAll();
+        return $model->getAll();
+
+    }
+
+    function insererBesoin(){
+        $model = new besoinVille(Flight::db());
+        $ville = $_POST['ville'];
+        $type = $_POST['type'];
+        $qt = $_POST['quantite'];
+        $model ->insert($ville,$type,$qt);
+        Flight::redirect('/gestion_besoin');
+
+
+        
+
+
+        
 
     }
 
