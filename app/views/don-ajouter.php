@@ -1,33 +1,11 @@
 <?php
 $base_url = Flight::get('flight.base_url');
+
+
+$page_title = "Ajouter don - BNGRC";
+
+ob_start();
 ?>
-<!doctype html>
-<html lang="fr">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Ajouter un Don — BNGRC</title>
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Custom CSS (conservé) -->
-    <link rel="stylesheet" href="<?= $base_url ?>css/style.css">
-    <style>
-        /* très léger : centrer la card */
-        body {
-            background: #f8f9fa;
-            padding: 1.5rem;
-        }
-
-        .card {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-    </style>
-</head>
 
 <body>
     <main>
@@ -220,7 +198,10 @@ $base_url = Flight::get('flight.base_url');
     </script>
 
 
+<?php
+// Capturer le contenu
+$content = ob_get_clean();
 
-</body>
-
-</html>
+// Inclure le template principal
+include 'modele.php';
+?>

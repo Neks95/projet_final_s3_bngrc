@@ -60,7 +60,6 @@ ob_start();
                     <tr>
                         <th class="sortable">Nom</th>
                         <th class="sortable">Région</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,17 +68,7 @@ ob_start();
                         <tr>
                             <td><strong><?= htmlspecialchars($v['nom']) ?></strong></td>
                             <td><?= htmlspecialchars($v['region']) ?></td>
-                            <td>
-                                <a href="<?= $base ?>ville/details/<?= $v['id'] ?>" class="btn btn-sm btn-info" title="Voir les détails">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="<?= $base ?>ville/modifier/<?= $v['id'] ?>" class="btn btn-sm btn-warning" title="Modifier">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <button class="btn btn-sm btn-danger" onclick="handleDelete('ville', <?= $v['id'] ?>)" title="Supprimer">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
+                           
                         </tr>
                         <?php endforeach; ?>
                     <?php else: ?>

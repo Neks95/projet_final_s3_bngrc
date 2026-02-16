@@ -40,7 +40,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'index.php' || $current_page === '') ? 'active' : '' ?>" 
-                           href="<?= $base ?>/">Dashboard</a>
+                           href="<?= $base ?>">Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?= $current_page === 'villes.php' ? 'active' : '' ?>" 
