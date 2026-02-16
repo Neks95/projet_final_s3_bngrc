@@ -1,50 +1,10 @@
+<?php
+$base_url = Flight::get('flight.base_url'); 
 
-<?php $base_url = Flight::get('flight.base_url'); 
-var_dump($besoin);
+$page_title = "Gestion des Besoins - BNGRC";
+
+ob_start();
 ?>
-
-
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Besoins - BNGRC</title>
-    
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= $base_url ?>css/style.css">
-</head>
-<body>
-    <!-- Header -->
-    <header class="site-header">
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
-                <a class="navbar-brand" href="<?= $base_url ?>">
-                    <div class="logo">BNGRC</div>
-                    <span>Gestion des Dons</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="index.html">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="villes.html">Villes</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="besoins.html">Besoins</a></li>
-                        <li class="nav-item"><a class="nav-link" href="dons.html">Dons</a></li>
-                        <li class="nav-item"><a class="nav-link" href="attributions.html">Attributions</a></li>
-                        <li class="nav-item"><a class="nav-link" href="simulation.html">Simulation</a></li>
-                        <li class="nav-item"><a class="nav-link" href="rapports.html">Rapports</a></li>
-                    </ul>
-                    <div class="ms-3 text-white small" id="current-datetime"></div>
-                </div>
-            </div>
-        </nav>
-    </header>
 
     <main class="main-content">
         <div class="container">
@@ -135,35 +95,15 @@ var_dump($besoin);
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>BNGRC</h5>
-                    <p>Bureau National de Gestion des Risques et des Catastrophes</p>
-                    <p>&copy; <?= date('Y') ?> BNGRC. Tous droits réservés.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Liens Utiles</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">À propos</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Aide</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Contact</h5>
-                    <p>Email: contact@bngrc.gov.mg<br>
-                    Tél: +261 20 XX XXX XX</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="js/app.js"></script>
-</body>
-</html>
+
+<?php
+// Capturer le contenu
+$content = ob_get_clean();
+
+// Inclure le template principal
+include 'modele.php';
+?>

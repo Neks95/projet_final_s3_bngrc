@@ -77,7 +77,5 @@ $router->group('', function(Router $router) use ($app) {
 		$router->post('/users/@id:[0-9]', [ ApiExampleController::class, 'updateUser' ]);
 	});
 
-
-
 	
 }, [ SecurityHeadersMiddleware::class ]);
