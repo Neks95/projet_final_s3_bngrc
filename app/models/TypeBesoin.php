@@ -9,10 +9,11 @@ class TypeBesoin {
         $this -> db = $db;
     }
 
-    public  function create($nom_type, $unite, $id_categorie) {
-        $sql = "INSERT INTO type_besoin (nom_type, unite, id_categorie) VALUES (?, ?, ?)";
+    public  function create($nom_type, $unite, $id_categorie,$pu) {
+        $sql = "INSERT INTO type_besoin (nom_type, unite, id_categorie,prix_unitaire) VALUES (?, ?, ?,?)";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$nom_type, $unite, $id_categorie]);
+        $stmt->execute([$nom_type, $unite, $id_categorie,$pu]);
+        return $this->db->lastInsertId();
     }
 
     public function getAll(){

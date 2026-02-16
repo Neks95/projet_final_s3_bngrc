@@ -9,14 +9,14 @@ class Don {
         $this->db = $db;
     }
 
-    public function create($id_type, $qte ,$date_saisie) {
-        $sql = "INSERT INTO don (id_type, qte, date_saisie) VALUES (?, ?, ?)";
+    public function insert($id_type, $qte) {
+        $sql = "INSERT INTO don (id_type, qte, date_saisie) VALUES (?, ?, NOW())";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$id_type, $qte, $date_saisie]);
+        return $stmt->execute([$id_type, $qte]);
     }
 
     public function getAll() {
-        $sql = "SELECT d.id, d.qte, d.date_saisie, tb.nom_type, tb.unite
+        $sql = "SELECT d.id, d.qte, d.date_saisie, tb.nom_type, tb.unite , tb.prix_unitaire
                 FROM don d
                 JOIN type_besoin tb ON d.id_type = tb.id
                 ORDER BY d.date_saisie DESC";

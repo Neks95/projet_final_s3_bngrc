@@ -330,16 +330,7 @@ body {
     justify-content: center;
 }
 
-/* Charts Container */
-.chart-container {
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    position: relative;
-    height: 400px;
-}
+
 
 /* Filtres */
 .filters-container {
@@ -504,3 +495,24 @@ body {
 .shadow-hover-custom:hover {
     box-shadow: var(--box-shadow-hover);
 }
+
+
+/* Bouton + toujours gris, même au hover/focus/active */
+.btn-outline-secondary.no-hover {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary.no-hover:hover,
+.btn-outline-secondary.no-hover:focus,
+.btn-outline-secondary.no-hover:active {
+    color: #6c757d !important;
+    background-color: #fff !important;
+    border-color: #6c757d !important;
+    box-shadow: none !important;
+}
+
+
+
+

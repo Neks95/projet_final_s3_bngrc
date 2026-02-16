@@ -12,10 +12,11 @@
         }
         
         public  function getAll() {
-            
             $stmt = $this->db->query("SELECT id, nom_categorie FROM categorie");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
+
+       
     
  
     }
