@@ -22,9 +22,11 @@ class Ville{
     }
 
     public function countVille() {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM ville");
-        $stmt->execute();
-        return (int) $stmt->fetchColumn();
+        $stmt = $this->db->query("SELECT COUNT(*) as total FROM ville");
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+
+
 }
 ?>

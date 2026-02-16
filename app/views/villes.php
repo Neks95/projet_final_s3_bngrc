@@ -1,178 +1,117 @@
-<?php $base = Flight::get('flight.base_url'); 
+<?php 
 use app\controllers\VilleController;
 
+// Récupérer les données
 $villes = (new VilleController())->getAllVille();
+
+// Configuration de la page
+$page_title = "Gestion des Villes - BNGRC";
+$base = Flight::get('flight.base_url') ?? '/';
+
+// Définir le contenu directement avec ob_start/ob_get_clean
+ob_start();
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Villes - BNGRC</title>
-    
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= $base ?>css/style.css">
-</head>
-<body>
-    <!-- Header -->
-    <header class="site-header">
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
-                <a class="navbar-brand" href="<?= $base ?>/">
-                    <div class="logo">BNGRC</div>
-                    <span>Gestion des Dons</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="<?= $base ?>/">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="<?= $base ?>/villes">Villes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/besoins">Besoins</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/dons">Dons</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/attributions">Attributions</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/simulation">Simulation</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/rapports">Rapports</a></li>
-                    </ul>
-                    <div class="ms-3 text-white small" id="current-datetime"></div>
-                </div>
+<!-- Contenu de la page villes -->
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold text-primary">Gestion des Villes</h1>
+            <p class="text-muted">Liste des villes affectées par les catastrophes</p>
+        </div>
+        <a href="<?= $base ?>villes/ajouter" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Ajouter une Ville
+        </a>
+    </div>
+
+    <!-- Filtres et Recherche -->
+    <div class="filters-container">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="searchVille" class="form-label">Rechercher</label>
+                <input type="text" class="form-control" id="searchVille" placeholder="Rechercher par nom de ville...">
             </div>
+            <div class="col-md-3">
+                <label for="filterRegion" class="form-label">Filtrer par Région</label>
+                <select class="form-select" id="filterRegion">
+                    <option value="">Toutes les régions</option>
+                    <option value="atsinanana">Atsinanana</option>
+                    <option value="vatovavy">Vatovavy Fitovinany</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="sortBy" class="form-label">Trier par</label>
+                <select class="form-select" id="sortBy">
+                    <option value="nom">Nom</option>
+                    <option value="region">Région</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des villes -->
+    <div class="table-container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h4 mb-0">Liste des Villes</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover" id="villesTable">
+                <thead>
+                    <tr>
+                        <th class="sortable">Nom</th>
+                        <th class="sortable">Région</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($villes)): ?>
+                        <?php foreach($villes as $v): ?>
+                        <tr>
+                            <td><strong><?= htmlspecialchars($v['nom']) ?></strong></td>
+                            <td><?= htmlspecialchars($v['region']) ?></td>
+                            <td>
+                                <a href="<?= $base ?>ville/details/<?= $v['id'] ?>" class="btn btn-sm btn-info" title="Voir les détails">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="<?= $base ?>ville/modifier/<?= $v['id'] ?>" class="btn btn-sm btn-warning" title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button class="btn btn-sm btn-danger" onclick="handleDelete('ville', <?= $v['id'] ?>)" title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">Aucune ville trouvée</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Pagination">
+            <ul class="pagination justify-content-center"></ul>
         </nav>
-    </header>
+    </div>
+</div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="display-5 fw-bold text-primary">Gestion des Villes</h1>
-                <p class="text-muted">Liste des villes affectées par les catastrophes</p>
-            </div>
-            <a href="<?= $base ?>villes/ajouter" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Ajouter une Ville
-            </a>
-        </div>
+<!-- Scripts spécifiques -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        makeSortable('villesTable');
+        filterTable('searchVille', 'villesTable');
+        filterTableBySelect('filterRegion', 'villesTable', 1);
+        initPagination('villesTable', 10);
+    });
+</script>
 
-            <!-- Filtres et Recherche -->
-            <div class="filters-container">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="searchVille" class="form-label">Rechercher</label>
-                        <input type="text" class="form-control" id="searchVille" placeholder="Rechercher par nom de ville...">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="filterRegion" class="form-label">Filtrer par Région</label>
-                        <select class="form-select" id="filterRegion">
-                            <option value="">Toutes les régions</option>
-                            <option value="atsinanana">Atsinanana</option>
-                            <option value="vatovavy">Vatovavy Fitovinany</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="sortBy" class="form-label">Trier par</label>
-                        <select class="form-select" id="sortBy">
-                            <option value="nom">Nom</option>
-                            <option value="region">Région</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+<?php
+// Capturer le contenu
+$content = ob_get_clean();
 
-            <!-- Tableau des villes -->
-            <div class="table-container">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="h4 mb-0">Liste des Villes</h3>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover" id="villesTable">
-                        <thead>
-                            <tr>
-                                <th class="sortable">Nom</th>
-                                <th class="sortable">Région</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody>
-                            <?php foreach($villes as $v){ ?>
-                            <tr>
-                                <td><strong><?= $v['nom'] ?></strong></td>
-                                <td><?= $v['region'] ?></td>
-                                <td>
-                                    <a href="ville-details.html" class="btn btn-sm btn-info" title="Voir les détails">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="ville-modifier.html" class="btn btn-sm btn-warning" title="Modifier">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button class="btn btn-sm btn-danger" onclick="handleDelete('ville', 1)" title="Supprimer">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <nav aria-label="Pagination">
-                    <ul class="pagination justify-content-center"></ul>
-                </nav>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>BNGRC</h5>
-                    <p>Bureau National de Gestion des Risques et des Catastrophes</p>
-                    <p>&copy; 2026 BNGRC. Tous droits réservés.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Liens Utiles</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">À propos</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Aide</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Contact</h5>
-                    <p>Email: contact@bngrc.gov.mg<br>
-                    Tél: +261 20 XX XXX XX</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="js/app.js"></script>
-    
-    <!-- Scripts spécifiques -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Rendre le tableau triable
-            makeSortable('villesTable');
-            
-            // Initialiser les filtres
-            filterTable('searchVille', 'villesTable');
-            filterTableBySelect('filterRegion', 'villesTable', 1);
-            
-            // Initialiser la pagination
-            initPagination('villesTable', 10);
-        });
-    </script>
-</body>
-</html>
+// Inclure le template principal
+include 'modele.php';
+?>
