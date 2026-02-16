@@ -4,7 +4,7 @@ namespace app\models;
 
 use PDO;
 
-class BesoinVille {
+class besoinVille {
     private $db;
 
     function __construct($db) {

@@ -1,8 +1,6 @@
 <?php
-
-
 namespace app\models;
-
+use PDO;
 
 class TypeBesoin {
     private $db;
@@ -11,11 +9,16 @@ class TypeBesoin {
         $this -> db = $db;
     }
 
-    public static function create($nom_type, $unite, $id_categorie) {
-        $db = Database::connect();
+    public  function create($nom_type, $unite, $id_categorie) {
         $sql = "INSERT INTO type_besoin (nom_type, unite, id_categorie) VALUES (?, ?, ?)";
-        $stmt = $db->prepare($sql);
+        $stmt = $this->db->prepare($sql);
         return $stmt->execute([$nom_type, $unite, $id_categorie]);
+    }
+
+    public function getAll(){
+        $sql = "SELECT id,nom_type FROM type_besoin";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
