@@ -1,6 +1,7 @@
 <?php
 
     namespace app\models;
+    use PDO;
 
     class Categorie {
 
@@ -10,9 +11,9 @@
             $this -> db = $db;
         }
         
-        public static function getAll() {
-            $db = Database::connect();
-            $stmt = $db->query("SELECT id, nom_categorie FROM categorie");
+        public  function getAll() {
+            
+            $stmt = $this->db->query("SELECT id, nom_categorie FROM categorie");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     
