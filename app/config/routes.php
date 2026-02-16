@@ -11,6 +11,7 @@ use app\controllers\DonController;
 use app\controllers\TypeBesoinController;
 use app\controllers\VilleController;
 use app\controllers\DashboardController;
+use app\controllers\DispatchController;
 
 /** 
  * @var Router $router 
@@ -111,4 +112,13 @@ $router->group('', function (Router $router) use ($app) {
 		$router->get('/users/@id:[0-9]', [ApiExampleController::class, 'getUser']);
 		$router->post('/users/@id:[0-9]', [ApiExampleController::class, 'updateUser']);
 	});
+
+
+Flight::route('/dispatch', function() {
+	$controller = new DispatchController();
+	$dispatch = $controller->simulateDispatch();
+
+	Flight::render('dispatch', ['dispatch' => $dispatch]);
+});
+
 }, [SecurityHeadersMiddleware::class]);
