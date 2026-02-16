@@ -1,3 +1,9 @@
+<?php $base = Flight::get('flight.base_url'); 
+use app\controllers\VilleController;
+
+$villes = (new VilleController())->getAllVille();
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,14 +16,14 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<?= $base ?>css/style.css">
 </head>
 <body>
     <!-- Header -->
     <header class="site-header">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="<?= $base ?>/">
                     <div class="logo">BNGRC</div>
                     <span>Gestion des Dons</span>
                 </a>
@@ -26,27 +32,13 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="villes.html">Villes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="besoins.html">Besoins</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="dons.html">Dons</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="attributions.html">Attributions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="simulation.html">Simulation</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="rapports.html">Rapports</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="<?= $base ?>/">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="<?= $base ?>/villes">Villes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/besoins">Besoins</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/dons">Dons</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/attributions">Attributions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/simulation">Simulation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>/rapports">Rapports</a></li>
                     </ul>
                     <div class="ms-3 text-white small" id="current-datetime"></div>
                 </div>
@@ -57,24 +49,15 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Villes</li>
-                </ol>
-            </nav>
-
-            <!-- Page Title -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="display-5 fw-bold text-primary-custom">Gestion des Villes</h1>
-                    <p class="text-muted">Liste des villes affectées par les catastrophes</p>
-                </div>
-                <a href="ville-ajouter.html" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Ajouter une Ville
-                </a>
+            <div>
+                <h1 class="display-5 fw-bold text-primary">Gestion des Villes</h1>
+                <p class="text-muted">Liste des villes affectées par les catastrophes</p>
             </div>
+            <a href="<?= $base ?>villes/ajouter" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Ajouter une Ville
+            </a>
+        </div>
 
             <!-- Filtres et Recherche -->
             <div class="filters-container">
@@ -95,7 +78,6 @@
                         <label for="sortBy" class="form-label">Trier par</label>
                         <select class="form-select" id="sortBy">
                             <option value="nom">Nom</option>
-                            <option value="sinistres">Nombre de sinistrés</option>
                             <option value="region">Région</option>
                         </select>
                     </div>
@@ -105,7 +87,7 @@
             <!-- Tableau des villes -->
             <div class="table-container">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="h4 mb-0">Liste des Villes (5 résultats)</h3>
+                    <h3 class="h4 mb-0">Liste des Villes</h3>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover" id="villesTable">
@@ -113,15 +95,15 @@
                             <tr>
                                 <th class="sortable">Nom</th>
                                 <th class="sortable">Région</th>
-                                <th class="sortable">Nombre de Sinistrés</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
+                        
                         <tbody>
+                            <?php foreach($villes as $v){ ?>
                             <tr>
-                                <td><strong>Toamasina</strong></td>
-                                <td>Atsinanana</td>
-                                <td>5 200</td>
+                                <td><strong><?= $v['nom'] ?></strong></td>
+                                <td><?= $v['region'] ?></td>
                                 <td>
                                     <a href="ville-details.html" class="btn btn-sm btn-info" title="Voir les détails">
                                         <i class="bi bi-eye"></i>
@@ -134,70 +116,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td><strong>Mananjary</strong></td>
-                                <td>Vatovavy Fitovinany</td>
-                                <td>4 800</td>
-                                <td>
-                                    <a href="ville-details.html" class="btn btn-sm btn-info" title="Voir les détails">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="ville-modifier.html" class="btn btn-sm btn-warning" title="Modifier">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button class="btn btn-sm btn-danger" onclick="handleDelete('ville', 2)" title="Supprimer">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Mahanoro</strong></td>
-                                <td>Atsinanana</td>
-                                <td>3 500</td>
-                                <td>
-                                    <a href="ville-details.html" class="btn btn-sm btn-info" title="Voir les détails">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="ville-modifier.html" class="btn btn-sm btn-warning" title="Modifier">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button class="btn btn-sm btn-danger" onclick="handleDelete('ville', 3)" title="Supprimer">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Vatomandry</strong></td>
-                                <td>Atsinanana</td>
-                                <td>3 000</td>
-                                <td>
-                                    <a href="ville-details.html" class="btn btn-sm btn-info" title="Voir les détails">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="ville-modifier.html" class="btn btn-sm btn-warning" title="Modifier">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button class="btn btn-sm btn-danger" onclick="handleDelete('ville', 4)" title="Supprimer">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Brickaville</strong></td>
-                                <td>Atsinanana</td>
-                                <td>2 000</td>
-                                <td>
-                                    <a href="ville-details.html" class="btn btn-sm btn-info" title="Voir les détails">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="ville-modifier.html" class="btn btn-sm btn-warning" title="Modifier">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button class="btn btn-sm btn-danger" onclick="handleDelete('ville', 5)" title="Supprimer">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

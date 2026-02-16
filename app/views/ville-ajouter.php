@@ -1,23 +1,29 @@
+<?php
+ $base = Flight::get('flight.base_url'); 
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter une Ville - BNGRC</title>
-    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<?= $base ?>css/style.css">
 </head>
+
 <body>
-    <!-- Header -->
+
+    <!-- Header (inchangé) -->
     <header class="site-header">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="<?= $base ?>/">
                     <div class="logo">BNGRC</div>
                     <span>Gestion des Dons</span>
                 </a>
@@ -27,25 +33,25 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Dashboard</a>
+                            <a class="nav-link" href="<?= $base ?>/">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="villes.html">Villes</a>
+                            <a class="nav-link active" href="<?= $base ?>/villes">Villes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="besoins.html">Besoins</a>
+                            <a class="nav-link" href="<?= $base ?>/besoins">Besoins</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="dons.html">Dons</a>
+                            <a class="nav-link" href="<?= $base ?>/dons">Dons</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="attributions.html">Attributions</a>
+                            <a class="nav-link" href="<?= $base ?>/attributions">Attributions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="simulation.html">Simulation</a>
+                            <a class="nav-link" href="<?= $base ?>/simulation">Simulation</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="rapports.html">Rapports</a>
+                            <a class="nav-link" href="<?= $base ?>/rapports">Rapports</a>
                         </li>
                     </ul>
                     <div class="ms-3 text-white small" id="current-datetime"></div>
@@ -57,31 +63,23 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="villes.html">Villes</a></li>
-                    <li class="breadcrumb-item active">Ajouter</li>
-                </ol>
-            </nav>
 
-            <!-- Page Title -->
+            <!-- Page Title (inchangé) -->
             <div class="mb-4">
                 <h1 class="display-5 fw-bold text-primary-custom">Ajouter une Ville</h1>
                 <p class="text-muted">Enregistrer une nouvelle ville affectée</p>
             </div>
 
-            <!-- Formulaire -->
+            <!-- Formulaire – POST vers la route -->
             <div class="row">
                 <div class="col-lg-8">
                     <div class="form-container">
-                        <form id="addVilleForm" onsubmit="handleAddForm(event, 'ville')">
+                        <form id="addVilleForm" method="POST" action="<?= $base ?>villes/ajouter">
                             <div class="mb-3">
                                 <label for="nom_ville" class="form-label">
                                     Nom de la Ville <span class="text-danger">*</span>
                                 </label>
-                                <input type="text" class="form-control" id="nom_ville" name="nom_ville" required placeholder="Ex: Toamasina">
+                                <input type="text" class="form-control" id="nom_ville" name="nom" required placeholder="Ex: Toamasina" maxlength="200">
                                 <div class="invalid-feedback">
                                     Veuillez saisir le nom de la ville.
                                 </div>
@@ -121,22 +119,6 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="nb_sinistres" class="form-label">
-                                    Nombre de Sinistrés <span class="text-danger">*</span>
-                                </label>
-                                <input type="number" class="form-control" id="nb_sinistres" name="nb_sinistres" required min="1" placeholder="Ex: 5000">
-                                <div class="invalid-feedback">
-                                    Veuillez saisir le nombre de sinistrés.
-                                </div>
-                                <small class="form-text text-muted">Nombre de personnes affectées par la catastrophe</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description (optionnel)</label>
-                                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Informations complémentaires sur la situation..."></textarea>
-                            </div>
-
                             <div class="alert alert-info">
                                 <i class="bi bi-info-circle"></i>
                                 Les champs marqués d'un <span class="text-danger">*</span> sont obligatoires.
@@ -146,49 +128,19 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle"></i> Enregistrer
                                 </button>
-                                <a href="villes.html" class="btn btn-secondary">
+                                <a href="<?= $base ?>/villes" class="btn btn-secondary">
                                     <i class="bi bi-x-circle"></i> Annuler
                                 </a>
                             </div>
                         </form>
                     </div>
                 </div>
-
-                <!-- Aide -->
-                <div class="col-lg-4">
-                    <div class="card shadow-custom">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="bi bi-question-circle text-primary"></i> Aide
-                            </h5>
-                            <p class="card-text">
-                                <strong>Nom de la Ville :</strong> Saisissez le nom officiel de la ville ou du district affecté.
-                            </p>
-                            <p class="card-text">
-                                <strong>Région :</strong> Sélectionnez la région administrative à laquelle appartient la ville.
-                            </p>
-                            <p class="card-text">
-                                <strong>Nombre de Sinistrés :</strong> Indiquez le nombre estimé de personnes affectées par la catastrophe dans cette ville.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="card shadow-custom mt-3">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="bi bi-lightbulb text-warning"></i> Conseil
-                            </h5>
-                            <p class="card-text">
-                                Assurez-vous que les informations sont exactes et à jour pour faciliter la gestion des dons et des distributions.
-                            </p>
-                        </div>
-                    </div>
-                </div>
             </div>
+
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer (année dynamique) -->
     <footer class="site-footer">
         <div class="container">
             <div class="row">
@@ -208,15 +160,16 @@
                 <div class="col-md-3">
                     <h5>Contact</h5>
                     <p>Email: contact@bngrc.gov.mg<br>
-                    Tél: +261 20 XX XXX XX</p>
+                        Tél: +261 20 XX XXX XX</p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Scripts (inchangés) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="js/app.js"></script>
+    <script src="<?= $base ?>/js/app.js"></script>
+
 </body>
+
 </html>
