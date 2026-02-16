@@ -20,11 +20,10 @@ class Dispatch {
             JOIN type_besoin t ON b.id_type = t.id
             JOIN ville v ON b.id_ville = v.id
             ORDER BY b.date_saisie ASC, b.id ASC
-
         ";
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     public function getDons() {
         $stmt = $this->db->query("
             SELECT d.id as id_don, d.id_type, d.qte, d.date_saisie
@@ -42,59 +41,91 @@ class Dispatch {
         return $stmt->execute([$id_don, $id_besoin, $qte]);
     }
 
-    public function simulateDispatchParVille() {
+    public function simulateDispatchParVille(float $frais = 0.0): array {
+        $frais = max(0.0, $frais);
+
         $besoins = $this->getBesoins();
         $dons = $this->getDons();
 
-        // Organiser les dons par type
+        // ── 1. Organiser les dons par type ──
         $donsParType = [];
         foreach ($dons as $d) {
             $donsParType[$d['id_type']][] = [
-                'id_don' => $d['id_don'],
-                'qte' => $d['qte']
+                'id_don'   => $d['id_don'],
+                'qte_init' => (int)$d['qte'],   // quantité initiale du don
+                'qte'      => (int)$d['qte'],   // quantité restante (va décroître)
             ];
         }
 
+        // ── 2. Calculer le total initial des dons par type ──
+        $totalDonsInitParType = [];
+        foreach ($donsParType as $typeId => $rows) {
+            $totalDonsInitParType[$typeId] = array_sum(array_column($rows, 'qte_init'));
+        }
+
+        // ── 3. Simuler les attributions ──
         $dispatch = [];
 
         foreach ($besoins as $b) {
-            $besoinVille = $b['qte_besoin_ville'];
+            $besoinVille = (int)$b['qte_besoin_ville'];
+            $resteBesoin = $besoinVille;
+            $typeId      = $b['id_type'];
 
-            // Total disponible pour ce type
-            $totalDonDisponible = 0;
-            if (isset($donsParType[$b['id_type']])) {
-                foreach ($donsParType[$b['id_type']] as $d) {
-                    $totalDonDisponible += $d['qte'];
+            if (!isset($donsParType[$typeId])) continue;
+
+            foreach ($donsParType[$typeId] as &$don) {
+                if ($resteBesoin <= 0) break;
+                if ($don['qte'] <= 0) continue;
+
+                $attribue = min($don['qte'], $resteBesoin);
+
+                // Décrémenter le don AVANT de calculer le reste
+                $don['qte']  -= $attribue;
+                $resteBesoin -= $attribue;
+
+                // Calculer le reste GLOBAL du don pour ce type (tous les dons de ce type)
+                $resteDonGlobalType = 0;
+                foreach ($donsParType[$typeId] as $row) {
+                    $resteDonGlobalType += $row['qte'];
                 }
+
+                $montant = $attribue * (float)$b['prix_unitaire'] * (1 + $frais / 100);
+
+                $dispatch[] = [
+                    'id_besoin'           => $b['id_besoin'],
+                    'ville'               => $b['ville'],
+                    'type'                => $b['nom_type'],
+                    'id_type'             => $typeId,
+                    'qte_besoin_ville'    => $besoinVille,
+                    'attribue'            => $attribue,
+                    'montant'             => $montant,
+                    'don_id'              => $don['id_don'],
+                    'reste_besoin_ville'  => $resteBesoin,
+                    // ── Données clés pour le détail ──
+                    'total_don_init_type' => $totalDonsInitParType[$typeId],     // total initial de tous les dons de ce type
+                    'reste_don_ce_don'    => $don['qte'],                        // reste de CE don précis
+                    'reste_don_type'      => $resteDonGlobalType,                // reste GLOBAL de tous les dons de ce type
+                ];
             }
+            unset($don);
+        }
 
-            // Attribution : si on peut satisfaire tout le besoin, on le fait
-            $attribueVille = min($besoinVille, $totalDonDisponible);
-            $resteBesoin = $attribueVille;
-
-            if (isset($donsParType[$b['id_type']])) {
-                foreach ($donsParType[$b['id_type']] as &$d) {
-                    if ($resteBesoin <= 0) break;
-                    $donAttribue = min($d['qte'], $resteBesoin);
-
-                    $dispatch[] = [
-                        'ville' => $b['ville'],
-                        'type' => $b['nom_type'],
-                        'id_type' => $b['id_type'],          
-                        'qte_besoin_ville' => $besoinVille,
-                        'attribue' => $donAttribue,
-                        'montant' => $donAttribue * $b['prix_unitaire'],
-                        'don_id' => $d['id_don'],
-                        'reste_don_apres' => $d['qte'] - $donAttribue
-                    ];
-
-                    // Mise à jour du don et reste besoin
-                    $d['qte'] -= $donAttribue;
-                    $resteBesoin -= $donAttribue;
-                }
+        // ── 4. Dons restants par type après toutes les attributions ──
+        $donsRestants = [];
+        foreach ($donsParType as $typeId => $rows) {
+            foreach ($rows as $row) {
+                $donsRestants[$typeId][] = [
+                    'id_don'   => $row['id_don'],
+                    'qte_init' => $row['qte_init'],
+                    'qte'      => $row['qte'],
+                ];
             }
         }
 
-        return $dispatch;
+        return [
+            'dispatch'             => $dispatch,
+            'donsRestants'         => $donsRestants,
+            'totalDonsInitParType' => $totalDonsInitParType,
+        ];
     }
 }
