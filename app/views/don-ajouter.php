@@ -1,22 +1,19 @@
 <?php
-$base_url = Flight::get('flight.base_url');
-
-
-$page_title = "Ajouter don - BNGRC";
+$base_url = Flight::get('flight.base_url'); 
+$page_title = "Ajouter Don - BNGRC";
 
 ob_start();
 ?>
 
-<body>
-    <main>
-        <div class="card shadow-sm">
+<main>
+    <div class="container py-4">
+        <div class="card shadow-sm mx-auto" style="max-width: 700px;">
             <div class="card-body">
                 <h4 class="mb-3">Ajouter un Don</h4>
 
                 <form id="addDonForm" method="post" action="<?= $base_url ?>ajouter_dons">
                     <div class="mb-3">
                         <label for="id_type" class="form-label">Type de don <span class="text-danger">*</span></label>
-
                         <div class="input-group">
                             <select id="id_type" name="id_type" class="form-select" required>
                                 <option value="">-- Sélectionner --</option>
@@ -31,177 +28,157 @@ ob_start();
                                 <?php endif; ?>
                             </select>
 
-                            <!-- Bouton qui ouvre la modal pour ajouter un nouveau type -->
                             <button type="button" class="btn btn-outline-secondary no-hover"
                                 data-bs-toggle="modal" data-bs-target="#addTypeModal">
                                 Ajouter un type
                             </button>
-
-                        </div>
-
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-6">
-                            <label for="qte" class="form-label">Quantité <span class="text-danger">*</span></label>
-                            <input id="qte" name="qte" type="number" class="form-control" min="1" step="1" required>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end">
-                        <a href="<?= $base_url ?>dons" class="btn btn-secondary me-2">Annuler</a>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </main>
-
-
-    <div class="modal fade" id="addTypeModal" tabindex="-1" aria-labelledby="addTypeModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="addTypeForm" method="post" action="">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addTypeModalLabel"><i class="bi bi-plus-lg"></i> Ajouter un type de don</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="addTypeAlert" class="alert d-none" role="alert"></div>
-
-                        <div class="mb-3">
-                            <label for="nom_type" class="form-label">Nom du type <span class="text-danger">*</span></label>
-                            <input id="nom_type" name="nom_type" type="text" class="form-control" required placeholder="Ex: Riz">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="unite_type" class="form-label">Unite</label>
-                            <input id="unite_type" name="unite" type="text" class="form-control" placeholder="Ex: kg, L, unités">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="categ" class="form-label">Categorie</label>
-                            <select name="categ" id="categ">
-                                <option value="">-- selection categorie --</option>
-                                <?php foreach ($categorie as $c) { ?>
-                                    <option value="<?= $c['id'] ?>"><?= $c['nom_categorie'] ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="prix" class="form-label">Prix unitaire</label>
-                            <input id="prix" name="prix" type="number" class="form-control" placeholder="">
-                        </div>
+                    <div class="mb-3">
+                        <label for="qte" class="form-label">Quantité <span class="text-danger">*</span></label>
+                        <input id="qte" name="qte" type="number" class="form-control" min="1" step="1" required>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annler</button>
-                        <button id="submitAddTypeBtn" type="submit" class="btn btn-primary">Ajouter</button>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="<?= $base_url ?>gestion_don" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Enregistrer
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+</main>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Modal pour ajouter un type -->
+<div class="modal fade" id="addTypeModal" tabindex="-1" aria-labelledby="addTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addTypeForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTypeModalLabel"><i class="bi bi-plus-lg"></i> Ajouter un type de don</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="addTypeAlert" class="alert d-none" role="alert"></div>
 
-    <script>
-        (function() {
+                    <div class="mb-3">
+                        <label for="nom_type_modal" class="form-label">Nom du type <span class="text-danger">*</span></label>
+                        <input id="nom_type_modal" name="nom_type" type="text" class="form-control" required placeholder="Ex: Riz">
+                    </div>
 
-            const addTypeUrl = '<?= $base_url ?>ajout_type';
+                    <div class="mb-3">
+                        <label for="unite_modal" class="form-label">Unité</label>
+                        <input id="unite_modal" name="unite" type="text" class="form-control" placeholder="Ex: kg, L, unités">
+                    </div>
 
-            const addTypeForm = document.getElementById('addTypeForm');
-            const addTypeAlert = document.getElementById('addTypeAlert');
-            const submitBtn = document.getElementById('submitAddTypeBtn');
-            const modalEl = document.getElementById('addTypeModal');
-            const idTypeSelect = document.getElementById('id_type');
+                    <div class="mb-3">
+                        <label for="categ_modal" class="form-label">Catégorie</label>
+                        <select name="categ" id="categ_modal" class="form-select">
+                            <option value="">-- selection categorie --</option>
+                            <?php foreach ($categorie as $c): ?>
+                                <option value="<?= $c['id'] ?>"><?= $c['nom_categorie'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-            function showAlert(message, type = 'danger') {
-                addTypeAlert.className = 'alert alert-' + type;
-                addTypeAlert.textContent = message;
-                addTypeAlert.classList.remove('d-none');
-            }
+                    <div class="mb-3">
+                        <label for="prix" class="form-label">Prix unitaire</label>
+                        <input id="prix" name="prix" type="number" class="form-control" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button id="submitAddTypeBtn" type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-            function hideAlert() {
-                addTypeAlert.classList.add('d-none');
-            }
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-            addTypeForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+<script>
+(function() {
+    const addTypeUrl = '<?= $base_url ?>ajout_type';
+    const addTypeForm = document.getElementById('addTypeForm');
+    const addTypeAlert = document.getElementById('addTypeAlert');
+    const submitBtn = document.getElementById('submitAddTypeBtn');
+    const modalEl = document.getElementById('addTypeModal');
+    const idTypeSelect = document.getElementById('id_type');
 
-                hideAlert();
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Ajout en cours...';
+    function showAlert(message, type = 'danger') {
+        addTypeAlert.className = 'alert alert-' + type;
+        addTypeAlert.textContent = message;
+        addTypeAlert.classList.remove('d-none');
+    }
 
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', addTypeUrl, true);
-                xhr.setRequestHeader('Accept', 'application/json');
+    function hideAlert() {
+        addTypeAlert.classList.add('d-none');
+    }
 
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4) {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Ajouter';
+    addTypeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        hideAlert();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Ajout en cours...';
 
-                        if (xhr.status === 200) {
-                            try {
-                                const data = JSON.parse(xhr.responseText);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', addTypeUrl, true);
+        xhr.setRequestHeader('Accept', 'application/json');
 
-                                if (data && data.success) {
-
-                                    const opt = document.createElement('option');
-                                    opt.value = data.id;
-                                    opt.textContent = data.nom_type;
-
-                                    idTypeSelect.appendChild(opt);
-                                    idTypeSelect.value = data.id;
-
-                                    const bsModal = bootstrap.Modal.getInstance(modalEl) ||
-                                        new bootstrap.Modal(modalEl);
-                                    bsModal.hide();
-
-                                    addTypeForm.reset();
-
-                                } else {
-                                    const msg = data.message || 'Impossible d’ajouter le type.';
-                                    showAlert(msg, 'warning');
-                                }
-
-                            } catch (err) {
-                                showAlert('Erreur JSON invalide.', 'danger');
-                            }
-
-                        } else {
-                            showAlert('Erreur serveur : ' + xhr.status, 'danger');
-                        }
-                    }
-                };
-
-                xhr.onerror = function() {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Ajouter';
-                    showAlert('Erreur réseau.', 'danger');
-                };
-
-                const formData = new FormData(addTypeForm);
-                xhr.send(formData);
-            });
-
-            modalEl.addEventListener('show.bs.modal', function() {
-                hideAlert();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Ajouter';
-            });
+                if (xhr.status === 200) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data && data.success) {
+                            const opt = document.createElement('option');
+                            opt.value = data.id;
+                            opt.textContent = data.nom_type;
+                            idTypeSelect.appendChild(opt);
+                            idTypeSelect.value = data.id;
 
-        })();
-    </script>
+                            const bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                            bsModal.hide();
+                            addTypeForm.reset();
+                        } else {
+                            showAlert(data.message || 'Impossible d’ajouter le type.', 'warning');
+                        }
+                    } catch (err) {
+                        showAlert('Erreur JSON invalide.', 'danger');
+                    }
+                } else {
+                    showAlert('Erreur serveur : ' + xhr.status, 'danger');
+                }
+            }
+        };
 
+        xhr.onerror = function() {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Ajouter';
+            showAlert('Erreur réseau.', 'danger');
+        };
+
+        xhr.send(new FormData(addTypeForm));
+    });
+
+    modalEl.addEventListener('show.bs.modal', function() {
+        hideAlert();
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Ajouter';
+    });
+})();
+</script>
 
 <?php
-// Capturer le contenu
 $content = ob_get_clean();
-
-// Inclure le template principal
 include 'modele.php';
 ?>
