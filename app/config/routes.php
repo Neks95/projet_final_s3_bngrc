@@ -20,16 +20,13 @@ use app\controllers\DashboardController;
 // This wraps all routes in the group with the SecurityHeadersMiddleware
 $router->group('', function (Router $router) use ($app) {
 
-	$router->get('/', function () use ($app) {
-		$app->render('index');
-	});
+	
 	// $router->get('/', function() use ($app) {
 	// 	$app->render('index');
 	// });
 	
 		
 	$router->get('/', [DashboardController::class, 'index']);
-	$router->get('/index', [DashboardController::class, 'index']);
 
 	
 	$router->get('/test', function () {
