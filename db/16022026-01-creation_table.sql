@@ -18,7 +18,7 @@ create table besoin(
 
 create table type_besoin (
     id int primary key auto_increment,
-    nom_type varchar(200),
+    nom_type varchar(200) UNIQUE,
     unite varchar(50),
     id_categorie int 
 );

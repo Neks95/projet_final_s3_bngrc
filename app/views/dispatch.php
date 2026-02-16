@@ -7,6 +7,10 @@ $result = $dispatchModel->simulateDispatchParVille();
 $dispatch = $result['dispatch'] ?? [];
 
 $page_title = "Simulation - BNGRC";
+$dispatch = $dispatchModel->simulateDispatchParVille();
+
+$page_title = "Simulation - BNGRC";
+
 ob_start();
 ?>
 
@@ -123,5 +127,9 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
+// Capturer le contenu
+$content = ob_get_clean();
+
+// Inclure le template principal
 include 'modele.php';
 ?>
