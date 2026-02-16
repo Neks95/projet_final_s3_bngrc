@@ -20,9 +20,9 @@ class besoinVille {
                 v.region,
                 t.nom_type,
                 t.unite,
+                t.prix_unitaire,
                 c.nom_categorie,
                 b.qte_besoin_ville,
-                b.prix_unitaire,
                 b.date_saisie
                 FROM besoin b
                 JOIN ville v ON b.id_ville = v.id
@@ -30,7 +30,8 @@ class besoinVille {
                 JOIN categorie c ON t.id_categorie = c.id
                 GROUP BY b.id
                 ORDER BY b.date_saisie DESC";
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -70,46 +71,17 @@ class besoinVille {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function insert($id_ville, $id_type, $qte_besoin_ville, $prix_unitaire, $date_saisie = null) {
-        if (!$date_saisie) {
-            $date_saisie = date('Y-m-d H:i:s');
-        }
+    function insert($id_ville, $id_type, $qte_besoin_ville) {
+       
         
-        $sql = "INSERT INTO besoin (id_ville, id_type, qte_besoin_ville, prix_unitaire, date_saisie) 
-                VALUES (:id_ville, :id_type, :qte, :prix, :date_saisie)";
+        $sql = "INSERT INTO besoin (id_ville, id_type, qte_besoin_ville,date_saisie) 
+                VALUES ( ?, ? , ? ,NOW())";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'id_ville' => $id_ville,
-            'id_type' => $id_type,
-            'qte' => $qte_besoin_ville,
-            'prix' => $prix_unitaire,
-            'date_saisie' => $date_saisie
-        ]);
+        $stmt->execute([$id_ville,$id_type,$qte_besoin_ville]);
         return $this->db->lastInsertId();
     }
 
-    function update($id, $id_ville, $id_type, $qte_besoin_ville, $prix_unitaire) {
-        $sql = "UPDATE besoin 
-                SET id_ville = :id_ville, 
-                    id_type = :id_type, 
-                    qte_besoin_ville = :qte, 
-                    prix_unitaire = :prix
-                WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            'id' => $id,
-            'id_ville' => $id_ville,
-            'id_type' => $id_type,
-            'qte' => $qte_besoin_ville,
-            'prix' => $prix_unitaire
-        ]);
-    }
 
-    function delete($id) {
-        $sql = "DELETE FROM besoin WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute(['id' => $id]);
-    }
 
     // Statistiques par ville
     function getStatsByVille() {

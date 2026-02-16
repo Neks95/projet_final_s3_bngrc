@@ -1,5 +1,7 @@
 
-<?php $base_url = Flight::get('flight.base_url'); ?>
+<?php $base_url = Flight::get('flight.base_url'); 
+var_dump($besoin);
+?>
 
 
 <!DOCTYPE html>
@@ -21,7 +23,7 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="<?= $base_url ?>">
                     <div class="logo">BNGRC</div>
                     <span>Gestion des Dons</span>
                 </a>
