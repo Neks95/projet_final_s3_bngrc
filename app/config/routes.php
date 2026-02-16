@@ -4,6 +4,7 @@ use app\controllers\ApiExampleController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
+use app\controllers\VilleController;
 
 /** 
  * @var Router $router 
@@ -17,14 +18,20 @@ $router->group('', function(Router $router) use ($app) {
 		$app->render('index');
 	});
 
-	    $router->get('/test', function () {
+	$router->get('/test', function () {
         $db = Flight::db();
         var_dump($db->query("SELECT version()")->fetch());
     });
 
-	$router->get('/hello-world/@name', function($name) {
-		echo '<h1>Hello world! Oh hey '.$name.'!</h1>';
-	});
+	$router->get('/villes', function () use ($app){
+        $app->render('villes');
+    });
+	
+	$router->get('/villes/ajouter', function () use ($app){
+        $app->render('ville-ajouter');
+    });
+
+	$router->post('/villes/ajouter', [ VilleController::class, 'insertVille' ]);
 
 	$router->group('/api', function() use ($router) {
 		$router->get('/users', [ ApiExampleController::class, 'getUsers' ]);
