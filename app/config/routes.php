@@ -14,13 +14,8 @@ use flight\net\Router;
 $router->group('', function(Router $router) use ($app) {
 
 	$router->get('/', function() use ($app) {
-		$app->render('index');
+		$app->render('welcome', [ 'message' => 'You are gonna do great things!' ]);
 	});
-
-	    $router->get('/test', function () {
-        $db = Flight::db();
-        var_dump($db->query("SELECT version()")->fetch());
-    });
 
 	$router->get('/hello-world/@name', function($name) {
 		echo '<h1>Hello world! Oh hey '.$name.'!</h1>';
@@ -34,6 +29,6 @@ $router->group('', function(Router $router) use ($app) {
 
 
 
-	$route ->post('creer_don')
+	$route -> get ('creer_don',[$DonController,'']);
 	
 }, [ SecurityHeadersMiddleware::class ]);
