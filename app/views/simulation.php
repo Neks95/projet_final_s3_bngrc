@@ -165,7 +165,7 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="<?= $base ?>/">
                     <div class="logo">BNGRC</div>
                     <span>Gestion des Dons</span>
                 </a>
@@ -174,27 +174,13 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="villes.html">Villes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="besoins.html">Besoins</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="dons.html">Dons</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="attributions.html">Attributions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="simulation.html">Simulation</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="rapports.html">Rapports</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="<?= $base ?>">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="<?= $base ?>villes">Villes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>besoins">Besoins</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>dons">Dons</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>attributions">Attributions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>dispatch">Simulation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>rapports">Rapports</a></li>
                     </ul>
                     <div class="ms-3 text-white small" id="current-datetime"></div>
                 </div>

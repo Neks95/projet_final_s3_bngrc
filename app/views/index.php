@@ -1,5 +1,6 @@
 <?php 
 $base = Flight::get('flight.base_url'); 
+var_dump($nbVille);
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +34,7 @@ $base = Flight::get('flight.base_url');
                     <li class="nav-item"><a class="nav-link" href="<?= $base ?>besoins">Besoins</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= $base ?>dons">Dons</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= $base ?>attributions">Attributions</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>simulation">Simulation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>dispatch">Simulation</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= $base ?>rapports">Rapports</a></li>
                     </ul>
                     <div class="ms-3 text-white small" id="current-datetime"></div>
