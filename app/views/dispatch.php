@@ -5,43 +5,11 @@ use app\models\dispatch;
 // Charger les données mais ne pas afficher le tableau tout de suite
 $dispatchModel = new Dispatch();
 $dispatch = $dispatchModel->simulateDispatchParVille();
-?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Dispatch - BNGRC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?= $base ?>css/style.css">
-</head>
-<body>
-        <!-- Header -->
-        <header class="site-header">
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
-                <a class="navbar-brand" href="<?= $base ?>/">
-                    <div class="logo">BNGRC</div>
-                    <span>Gestion des Dons</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="<?= $base ?>">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="<?= $base ?>villes">Villes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>besoins">Besoins</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>dons">Dons</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>attributions">Attributions</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>dispatch">Simulation</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $base ?>rapports">Rapports</a></li>
-                    </ul>
-                    <div class="ms-3 text-white small" id="current-datetime"></div>
-                </div>
-            </div>
-        </nav>
-    </header>
+$page_title = "Simulation - BNGRC";
+
+ob_start();
+?>
 
 <div class="container mt-4">
     <h1 class="mb-4 text-primary">Simulation du Dispatch</h1>
@@ -101,15 +69,6 @@ $dispatch = $dispatchModel->simulateDispatchParVille();
 
 </div>
 
-<!-- ================= FOOTER ================= -->
-<footer class="site-footer">
-    <div class="container">
-        <h5>BNGRC</h5>
-        <p>Bureau National de Gestion des Risques et des Catastrophes</p>
-        <p>&copy; 2026 BNGRC. Tous droits réservés.</p>
-    </div>
-</footer>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Afficher le tableau lorsque l'on clique sur "Simuler"
@@ -119,5 +78,10 @@ $dispatch = $dispatchModel->simulateDispatchParVille();
     });
 </script>
 
-</body>
-</html>
+<?php
+// Capturer le contenu
+$content = ob_get_clean();
+
+// Inclure le template principal
+include 'modele.php';
+?>

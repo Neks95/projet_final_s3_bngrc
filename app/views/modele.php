@@ -56,7 +56,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <a class="nav-link" href="<?= $base ?>attributions">Attributions</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= $base ?>simulation">Simulation</a>
+                        <a class="nav-link" href="<?= $base ?>dispatch">Simulation</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= $base ?>rapports">Rapports</a>
