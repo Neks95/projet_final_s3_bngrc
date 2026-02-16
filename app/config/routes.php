@@ -34,6 +34,5 @@ $router->group('', function(Router $router) use ($app) {
 
 
 
-	$route ->post('creer_don')
 	
 }, [ SecurityHeadersMiddleware::class ]);
