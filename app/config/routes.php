@@ -2,6 +2,7 @@
 
 use app\controllers\BesoinVilleController;
 use app\controllers\CategorieController;
+use app\controllers\EtatController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
@@ -85,6 +86,28 @@ $router->group('', function (Router $router) use ($app) {
 		]);
 	});
 
+
+	$router->post('/restore_initial', function () {
+		header('Content-Type: application/json; charset=utf-8');
+		try {
+			$controller = new EtatController();
+			$controller->rollback();
+			echo json_encode([
+				'success' => true,
+				'message' => 'Jeu de donnees restaure avec succes.'
+			]);
+			return;
+		} catch (\Throwable $e) {
+			http_response_code(500);
+			echo json_encode([
+				'success' => false,
+				'message' => 'Erreur : ' . $e->getMessage()
+			]);
+			return;
+		}
+	});
+
+
 	$router->get('/ajout_don', function () {
 		$typeController  = new TypeBesoinController();
 		$types  = $typeController->getAllType();
@@ -103,21 +126,21 @@ $router->group('', function (Router $router) use ($app) {
 	});
 
 	$router->post('/acheter', function () {
-    header('Content-Type: application/json; charset=utf-8');
-    $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-    $id_besoin = isset($input['id_besoin']) ? (int)$input['id_besoin'] : 0;
-    $qte_demande = isset($input['qte']) ? (float)$input['qte'] : 0;
+		header('Content-Type: application/json; charset=utf-8');
+		$input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+		$id_besoin = isset($input['id_besoin']) ? (int)$input['id_besoin'] : 0;
+		$qte_demande = isset($input['qte']) ? (float)$input['qte'] : 0;
 
-    $db = Flight::db();
-    $utils = new Utils($db);
-    $service = new AchatService($db, $utils);
+		$db = Flight::db();
+		$utils = new Utils($db);
+		$service = new AchatService($db, $utils);
 
-    $result = $service->processPurchase($id_besoin, $qte_demande);
+		$result = $service->processPurchase($id_besoin, $qte_demande);
 
-    http_response_code($result['status']);
-    echo json_encode($result['body']);
-    return;
-});
+		http_response_code($result['status']);
+		echo json_encode($result['body']);
+		return;
+	});
 	$router->post('/ajouter_besoin', function () {
 		$controller = new BesoinVilleController();
 		$controller->insererBesoin();
