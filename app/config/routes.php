@@ -153,4 +153,15 @@ $router->group('', function (Router $router) use ($app) {
 
 		Flight::render('dispatch', ['dispatch' => $dispatch]);
 	});
+
+	Flight::route('POST /dispatch/valider', function () {
+		header('Content-Type: application/json; charset=utf-8');
+		$controller = new DispatchController();
+		try {
+			$message = $controller->validateDispatch();
+			echo json_encode(['success' => true, 'message' => $message]);
+		} catch (Exception $e) {
+			echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+		}
+	});
 }, [SecurityHeadersMiddleware::class]);
