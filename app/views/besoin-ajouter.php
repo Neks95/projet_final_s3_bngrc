@@ -92,9 +92,16 @@ ob_start();
                             </a>
                         </div>
                     </form>
-                </div>
-            </div>
 
+            </div>
+                <a href="<?= $base_url ?>gestion_besoin" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Revenir
+                </a>
+
+                <a href="<?= $base_url ?>dispatch" class="btn btn-outline-primary">
+                    <i class="bi bi-graph-up"></i> Simulation
+                </a>
+                </div>
 
         </div>
     </div>
