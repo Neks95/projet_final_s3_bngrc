@@ -95,7 +95,7 @@ INSERT INTO besoin (id, id_ville, id_type, qte_besoin_ville, date_saisie) VALUES
 (13, 5, 9,  10000000, '2026-02-16 00:00:00'),  -- Morondava,   Argent,     10 000 000
 (14, 3, 2,      1000, '2026-02-15 00:00:00'),  -- Farafangana, Eau (L),    1 000
 (15, 5, 6,       180, '2026-02-16 00:00:00'),  -- Morondava,   Bâche,      180
-(16, 1, 10,        1, '2026-02-15 00:00:00'),  -- Toamasina,   Groupe,     1
+(16, 1, 10,        3, '2026-02-15 00:00:00'),  -- Toamasina,   Groupe,     1
 (17, 1, 1,       800, '2026-02-16 00:00:00'),  -- Toamasina,   Riz (kg),   800
 (18, 4, 4,       200, '2026-02-16 00:00:00'),  -- Nosy Be,     Haricots,   200
 (19, 2, 7,        60, '2026-02-16 00:00:00'),  -- Mananjary,   Clous (kg), 60

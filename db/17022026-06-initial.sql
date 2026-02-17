@@ -16,6 +16,3 @@ INSERT INTO don_initial SELECT * FROM don;
 CREATE TABLE historique_initial LIKE historique;
 INSERT INTO historique_initial SELECT * FROM historique;
 
-UPDATE besoin
-SET qte_besoin_ville = 3
-WHERE id = 16;
