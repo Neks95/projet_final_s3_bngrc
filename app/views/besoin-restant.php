@@ -26,7 +26,7 @@ ob_start();
       <form method="get" class="m-0">
         <label for="filterVille" class="form-label mb-0 me-2 small">Filtrer par ville</label>
         <select id="filterVille" name="ville" class="form-select form-select-sm" onchange="this.form.submit()">
-          <option value="0">Toutes les villes</option>
+          <option value="0">Toutes</option>
           <?php foreach ($ville as $v): ?>
             <option value="<?= (int)$v['id'] ?>"
               <?= (isset($selectedVille) && $selectedVille === (int)$v['id']) ? 'selected' : '' ?>>

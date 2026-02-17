@@ -65,13 +65,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <a class="nav-link" href="<?= $base ?>besoins_reste">Reste des besoins</a>
                     </li>
                 </ul>
-                <div class="ms-3 text-white small" id="current-datetime"></div>
             </div>
         </div>
     </nav>
 </header>
 
-<!-- Contenu principal (ici vient le contenu spécifique de chaque page) -->
 <main class="main-content">
     <?php
     // C’est ici que la page appelle include 'contenu.php' ou affiche directement son contenu
@@ -95,22 +93,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <p>&copy; <?= date('Y') ?> BNGRC. Tous droits réservés.</p>
             </div>
             <div class="col-md-3">
-                <h5>Liens Utiles</h5>
+                <h5>ETU</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#">À propos</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Aide</a></li>
+                    <li><a href="#">ETU004069 Tsiky</a></li>
+                    <li><a href="#">ETU004277 Owan</a></li>
+                    <li><a href="#">ETU004092 Nekena</a></li>
                 </ul>
             </div>
             <div class="col-md-3">
                 <h5>Contact</h5>
-                <p>Email: contact@bngrc.gov.mg<br>Tél: +261 20 XX XXX XX</p>
+                <p>Email: contact@bngrc.gov.mg<br>Tél: +261 34 07 30 97</p>
             </div>
         </div>
     </div>
 </footer>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="<?= $base ?>js/app.js"></script>
 
