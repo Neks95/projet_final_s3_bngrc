@@ -179,7 +179,7 @@ ob_start();
         xhr.onerror = function() {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Ajouter';
-            showAlert('Erreur réseau.', 'danger');
+            showAlert('Erreur reseau.', 'danger');
         };
 
         xhr.send(new FormData(addTypeForm));
