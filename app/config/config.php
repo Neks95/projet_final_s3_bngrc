@@ -47,6 +47,8 @@ $app->path(__DIR__ . $ds . '..' . $ds . '..');
 
 // Core config variables
 $base_url = "/";
+// $base_url = "/ETU004277/projet_final_s3_bngrc/";
+
 $app->set('flight.base_url', $base_url);           // Base URL for your app. Change if app is in a subdirectory (e.g., '/myapp/')
 $app->set('flight.case_sensitive', false);    // Set true for case sensitive routes. Default: false
 $app->set('flight.log_errors', true);         // Log errors to file. Recommended: true in production
@@ -68,10 +70,10 @@ return [
 	 **************************************/
 	'database' => [
 		// MySQL Example:
-		'host'     => '127.0.0.1',      // Database host (e.g., 'localhost', 'db.example.com')
-		'dbname'   => 'bngrc',   // Database name (e.g., 'flightphp')
-		'user'     => 'root',  // Database user (e.g., 'root')
-		'password' => '',  // Database password (never commit real passwords)
+		'host'     => 'localhost',      // Database host (e.g., 'localhost', 'db.example.com')
+		'dbname'   => 'db_s2_ETU004277',   // Database name (e.g., 'flightphp')
+		'user'     => 'ETU004277',  // Database user (e.g., 'root')
+		'password' => 'gdGQTeYe',  // Database password (never commit real passwords)
 
 		// SQLite Example:
 		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite', // Path to SQLite file

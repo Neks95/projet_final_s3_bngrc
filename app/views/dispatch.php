@@ -229,8 +229,7 @@ ob_start();
                 })
                 .then(data => {
                     showToast(data.message || 'Dispatch validé !', 'success');
-                    // petit délai pour laisser voir le toast avant reload
-                    setTimeout(() => location.reload(), 20000);
+                    setTimeout(() => location.reload(), 1000);
                 })
                 .catch(err => {
                     showToast('Erreur lors de la validation : ' + err.message, 'error');
