@@ -80,6 +80,25 @@ class DispatchController {
 
         foreach ($dispatchList as $d) {
             if (isset($d['attribue']) && $d['attribue'] > 0 && !empty($d['don_id'])) {
+    
+    public function simulateDispatch($frais = 0.0) {
+        $simulationResult = $this->model->simulateDispatchParVille((float)$frais);
+        
+   
+        return $simulationResult['dispatch'] ?? [];
+    }
+
+   
+    public function validateDispatch($frais = 0.0) {
+
+        $dispatchList = $this->simulateDispatch($frais);
+        
+        $count = 0;
+        
+        foreach ($dispatchList as $d) {
+            if (isset($d['attribue']) && $d['attribue'] > 0) {
+                
+                
                 $this->model->saveAttribution(
                     $d['don_id'],
                     $d['id_besoin'],
