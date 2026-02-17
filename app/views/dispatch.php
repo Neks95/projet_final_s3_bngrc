@@ -1,7 +1,6 @@
 <?php
 $base_url = Flight::get('flight.base_url');
 
-
 $page_title = "Gestion des dispatch - BNGRC";
 
 ob_start();
@@ -38,13 +37,19 @@ ob_start();
         </button>
     </div>
 
-
-
+    <!-- Spinner de chargement -->
+    <div id="loadingSpinner" class="text-center my-4" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-2">Simulation en cours...</p>
+    </div>
 
     <div id="tableDispatchContainer" style="display: none;">
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5>Résultats de la Simulation</h5>
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Résultats de la Simulation</h5>
+                <span id="modeLabel" class="badge bg-light text-primary"></span>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -60,7 +65,6 @@ ob_start();
                             </tr>
                         </thead>
                         <tbody>
-
                         </tbody>
                     </table>
                 </div>
@@ -83,83 +87,118 @@ ob_start();
         const tableBody = document.querySelector('#tableDispatch tbody');
         const retour = document.getElementById('btnRevenir');
         const modeSelect = document.getElementById('modeSimulation');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const modeLabel = document.getElementById('modeLabel');
 
-        function simulateDispatch(mode) {
-            const villes = ['Antananarivo', 'Fianarantsoa', 'Toamasina'];
-            const types = ['Eau', 'Nourriture', 'Médicaments'];
-            let result = [];
-
-            villes.forEach(ville => {
-                types.forEach(type => {
-                    const besoin = Math.floor(Math.random() * 1000) + 100;
-                    const attribue = Math.floor(besoin * Math.random());
-                    result.push({
-                        ville: ville,
-                        type: type,
-                        qte_besoin_ville: besoin,
-                        attribue: attribue,
-                        montant: attribue * 1000,
-                        reste_don_type: besoin - attribue
-                    });
-                });
-            });
-
-            if (mode === 'plusPetit') {
-                result.sort((a, b) => a.qte_besoin_ville - b.qte_besoin_ville);
-            } else if (mode === 'proportion') {
-                result.sort((a, b) => (a.attribue / a.qte_besoin_ville) - (b.attribue / b.qte_besoin_ville));
-            }
-
-            return result;
-        }
+        const modeLabels = {
+            'date': 'Priorité par Date',
+            'plusPetit': 'Priorité par le Plus Petit',
+            'proportion': 'Priorité par Proportionnalité'
+        };
 
         function renderTable(dispatchData) {
             tableBody.innerHTML = '';
+
+            if (dispatchData.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="6" class="text-center text-muted">Aucune donnée à afficher. Vérifiez les besoins et les dons.</td>';
+                tableBody.appendChild(row);
+                btnValider.style.display = 'none';
+                return;
+            }
+
             dispatchData.forEach(d => {
                 const row = document.createElement('tr');
+
+                // Mettre en évidence les lignes sans attribution
+                if (d.attribue === 0) {
+                    row.classList.add('table-warning');
+                }
+
                 row.innerHTML = `
-                <td>${d.ville}</td>
-                <td>${d.type}</td>
-                <td>${d.qte_besoin_ville.toLocaleString('fr-FR')}</td>
-                <td>${d.attribue.toLocaleString('fr-FR')}</td>
-                <td>${d.montant.toLocaleString('fr-FR')} Ar</td>
-                <td>${d.reste_don_type.toLocaleString('fr-FR')}</td>
-            `;
+                    <td>${d.ville}</td>
+                    <td>${d.type}</td>
+                    <td>${Number(d.qte_besoin_ville).toLocaleString('fr-FR')}</td>
+                    <td>${Number(d.attribue).toLocaleString('fr-FR')}</td>
+                    <td>${Number(d.montant).toLocaleString('fr-FR', {minimumFractionDigits: 2})} Ar</td>
+                    <td>${Number(d.reste_don_type).toLocaleString('fr-FR')}</td>
+                `;
                 tableBody.appendChild(row);
             });
 
             btnValider.style.display = 'inline-block';
         }
 
+        // =============================================
+        // SIMULER : appel AJAX GET vers le backend
+        // =============================================
         btnSimuler.addEventListener('click', function() {
             const mode = modeSelect.value;
-            const dispatchData = simulateDispatch(mode);
 
-            tableContainer.style.display = 'block';
-            renderTable(dispatchData);
+            // Afficher le spinner, masquer le tableau
+            loadingSpinner.style.display = 'block';
+            tableContainer.style.display = 'none';
             btnSimuler.disabled = true;
+
+            fetch(`<?= $base_url ?>dispatch/simuler?mode=${encodeURIComponent(mode)}`)
+                .then(r => {
+                    if (!r.ok) throw new Error('Erreur serveur : ' + r.status);
+                    return r.json();
+                })
+                .then(data => {
+                    loadingSpinner.style.display = 'none';
+
+                    if (data.success) {
+                        tableContainer.style.display = 'block';
+                        modeLabel.textContent = modeLabels[data.mode] || data.mode;
+                        renderTable(data.dispatch);
+                    } else {
+                        alert('Erreur : ' + (data.message || 'Simulation échouée.'));
+                        btnSimuler.disabled = false;
+                    }
+                })
+                .catch(err => {
+                    loadingSpinner.style.display = 'none';
+                    alert('Erreur lors de la simulation : ' + err.message);
+                    btnSimuler.disabled = false;
+                });
         });
 
+        // =============================================
+        // VALIDER : appel AJAX POST vers le backend
+        // =============================================
         btnValider.addEventListener('click', function() {
             if (!confirm("Confirmer la validation du dispatch ?")) return;
+
+            const mode = modeSelect.value;
             btnValider.disabled = true;
-            btnValider.innerText = 'Validation en cours...';
+            btnValider.innerHTML = '<i class="bi bi-hourglass-split"></i> Validation en cours...';
 
             fetch("<?= $base_url ?>dispatch/valider", {
-                    method: 'POST'
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `mode=${encodeURIComponent(mode)}`
                 })
-                .then(r => r.json())
+                .then(r => {
+                    if (!r.ok) throw new Error('Erreur serveur : ' + r.status);
+                    return r.json();
+                })
                 .then(data => {
                     alert(data.message || 'Dispatch validé !');
                     location.reload();
                 })
                 .catch(err => {
-                    alert('Erreur lors de la validation: ' + err);
+                    alert('Erreur lors de la validation : ' + err.message);
                     btnValider.disabled = false;
-                    btnValider.innerText = 'Valider le Dispatch';
+                    btnValider.innerHTML = '<i class="bi bi-check-circle"></i> Valider le Dispatch';
                 });
         });
 
+        // =============================================
+        // REVENIR : restaurer l'état initial
+        // =============================================
         retour.addEventListener('click', function() {
             if (!confirm("Confirmer le retour à l'état initial ?")) return;
 
@@ -176,9 +215,6 @@ ob_start();
     });
 </script>
 <?php
-// Capturer le contenu
 $content = ob_get_clean();
-
-// Inclure le template principal
 include 'modele.php';
 ?>
