@@ -78,8 +78,58 @@ ob_start();
     </div>
 </div>
 
+<!-- Toast Container (utilisé pour remplacer les alert()) -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1200;">
+    <div id="liveToast" class="toast align-items-center border-0" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">Message ici</div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        function showToast(message, type = 'info', delay = 3000) {
+            if (window.bootstrap && bootstrap.Toast) {
+                const toastEl = document.getElementById('liveToast');
+                const toastMessage = document.getElementById('toastMessage');
+
+                const bgClasses = ['bg-success','bg-danger','bg-warning','bg-info','bg-primary','bg-secondary','bg-light','bg-dark'];
+                const textWhite = 'text-white';
+                const textDark = 'text-dark';
+
+                toastEl.classList.remove(...bgClasses);
+                toastEl.classList.remove(textWhite, textDark);
+
+                const map = {
+                    'success': 'bg-success',
+                    'error': 'bg-danger',
+                    'danger': 'bg-danger',
+                    'warning': 'bg-warning',
+                    'info': 'bg-info',
+                    'primary': 'bg-primary',
+                    'secondary': 'bg-secondary'
+                };
+                const chosenBg = map[type] || map['info'];
+                toastEl.classList.add(chosenBg);
+
+                if (chosenBg === 'bg-warning' || chosenBg === 'bg-light') {
+                    toastEl.classList.add(textDark);
+                } else {
+                    toastEl.classList.add(textWhite);
+                }
+
+                toastMessage.textContent = message;
+
+                const bsToast = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: delay });
+
+                bsToast.show();
+            } else {
+                alert(message);
+            }
+        }
+
         const btnSimuler = document.getElementById('btnSimuler');
         const btnValider = document.getElementById('btnValider');
         const tableContainer = document.getElementById('tableDispatchContainer');
@@ -147,13 +197,13 @@ ob_start();
                         modeLabel.textContent = modeLabels[data.mode] || data.mode;
                         renderTable(data.dispatch);
                     } else {
-                        alert('Erreur : ' + (data.message || 'Simulation échouée.'));
+                        showToast('Erreur : ' + (data.message || 'Simulation échouée.'), 'error');
                         btnSimuler.disabled = false;
                     }
                 })
                 .catch(err => {
                     loadingSpinner.style.display = 'none';
-                    alert('Erreur lors de la simulation : ' + err.message);
+                    showToast('Erreur lors de la simulation : ' + err.message, 'error');
                     btnSimuler.disabled = false;
                 });
         });
@@ -178,11 +228,12 @@ ob_start();
                     return r.json();
                 })
                 .then(data => {
-                    alert(data.message || 'Dispatch validé !');
-                    location.reload();
+                    showToast(data.message || 'Dispatch validé !', 'success');
+                    // petit délai pour laisser voir le toast avant reload
+                    setTimeout(() => location.reload(), 800);
                 })
                 .catch(err => {
-                    alert('Erreur lors de la validation : ' + err.message);
+                    showToast('Erreur lors de la validation : ' + err.message, 'error');
                     btnValider.disabled = false;
                     btnValider.innerHTML = '<i class="bi bi-check-circle"></i> Valider le Dispatch';
                 });
@@ -197,10 +248,10 @@ ob_start();
                 })
                 .then(r => r.json())
                 .then(data => {
-                    alert(data.message);
-                    location.reload();
+                    showToast(data.message || 'Restauration effectuée', 'success');
+                    setTimeout(() => location.reload(), 700);
                 })
-                .catch(err => alert("Erreur lors de la restauration."));
+                .catch(err => showToast("Erreur lors de la restauration.", 'error'));
         });
     });
 </script>
