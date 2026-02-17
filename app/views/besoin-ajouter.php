@@ -105,7 +105,6 @@ ob_start();
 <!-- Custom JS -->
 <script src="<?= $base_url ?>js/app.js"></script>
 
-<!-- Modal pour ajouter un nouveau type -->
 <div class="modal fade" id="addTypeModal" tabindex="-1" aria-labelledby="addTypeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -234,11 +233,6 @@ ob_start();
     })();
 </script>
 
-
-
-</body>
-
-</html>
 
 <?php
 // Capturer le contenu
