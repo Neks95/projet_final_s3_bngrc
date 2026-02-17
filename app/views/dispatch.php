@@ -1,5 +1,4 @@
 <?php
-$base = Flight::get('flight.base_url');
 $base_url = Flight::get('flight.base_url'); 
 
 use app\models\Dispatch;
@@ -38,7 +37,7 @@ ob_start();
     <div id="tableDispatch" style="display: none;">
         <?php if (empty($dispatch)): ?>
             <div class="alert alert-warning">
-                ⚠️ Aucun don disponible pour simuler. Vérifiez votre table `don` et l'historique.
+                 Aucun don disponible pour simuler. Vérifiez votre table `don` et l'historique.
             </div>
         <?php else: ?>
             <div class="card shadow-sm">
@@ -102,7 +101,7 @@ include 'modele.php';
                 btnValider.disabled = true;
                 btnValider.innerText = 'Validation en cours...';
 
-                fetch('/dispatch/valider', { method: 'POST' })
+                fetch("<?= $base_url ?>dispatch/valider", { method: 'POST' })
                     .then(function(r){ return r.json(); })
                     .then(function(data){
                         alert(data.message || 'Opération terminée');

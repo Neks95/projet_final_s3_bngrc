@@ -29,7 +29,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <header class="site-header">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="<?= $base ?>/">
+            <a class="navbar-brand" href="<?= $base ?>">
                 <div class="logo">BNGRC</div>
                 <span>Gestion des Dons</span>
             </a>

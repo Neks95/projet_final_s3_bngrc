@@ -66,7 +66,6 @@ ob_start();
     </div>
 </main>
 
-<!-- Modal pour ajouter un type -->
 <div class="modal fade" id="addTypeModal" tabindex="-1" aria-labelledby="addTypeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
