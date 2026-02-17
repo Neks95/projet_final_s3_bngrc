@@ -2,7 +2,7 @@
 namespace app\controllers;
 
 use Flight;
-use app\models\dispatch;
+use app\models\Dispatch; // Attention à la majuscule selon votre fichier
 
 class DispatchController {
 
@@ -12,48 +12,46 @@ class DispatchController {
         $this->model = new Dispatch();
     }
 
-    public function simulateDispatch($frais = 0) {
-        $result = [];
+    /**
+     * Lance la simulation et retourne les résultats pour affichage
+     */
+    public function simulateDispatch($frais = 0.0) {
+        // On appelle la logique complexe qui est maintenant dans le modèle
+        $simulationResult = $this->model->simulateDispatchParVille((float)$frais);
+        
+        // On retourne uniquement la liste 'dispatch' car c'est ce que la vue attend
+        // Si la vue a besoin des infos de debug, retournez tout $simulationResult
+        return $simulationResult['dispatch'] ?? [];
+    }
 
-        $besoins = $this->model->getBesoins();
-        $dons = $this->model->getDons();
-
-        foreach ($besoins as $b) {
-            $besoinRestant = $b['qte_besoin_ville'];
-
-            foreach ($dons as &$d) {
-                if ($d['id_type'] != $b['id_type']) continue;
-                if ($d['qte'] <= 0) continue;
-
-                $attribue = min($besoinRestant, $d['qte']);
-                $montant = $attribue * $b['prix_unitaire'] * (1 + $frais / 100);
-
-                $result[] = [
-                    'id_besoin' => $b['id_besoin'],
-                    'ville' => $b['ville'],
-                    'type' => $b['nom_type'],
-                    'attribue' => $attribue,
-                    'montant' => $montant,
-                    'don_id' => $d['id_don']
-                ];
-
-                $d['qte'] -= $attribue;
-                $besoinRestant -= $attribue;
-
-                if ($besoinRestant <= 0) break;
+    /**
+     * Valide et enregistre les résultats de la simulation en base de données
+     */
+    public function validateDispatch($frais = 0.0) {
+        // 1. On relance la simulation pour être sûr d'avoir les données à jour
+        // (au cas où le stock a changé entre l'affichage et le clic sur Valider)
+        $dispatchList = $this->simulateDispatch($frais);
+        
+        $count = 0;
+        
+        // 2. On parcourt les résultats pour les insérer dans l'historique
+        foreach ($dispatchList as $d) {
+            // On ne sauvegarde que si une quantité a été attribuée
+            if (isset($d['attribue']) && $d['attribue'] > 0) {
+                
+                // Appel à une méthode du modèle pour l'insertion SQL
+                // (Assurez-vous d'avoir créé cette méthode dans le modèle, voir ci-dessous)
+                $this->model->saveAttribution(
+                    $d['don_id'], 
+                    $d['id_besoin'], 
+                    $d['attribue'],
+                    date('Y-m-d H:i:s') // Date du mouvement
+                );
+                
+                $count++;
             }
         }
 
-        return $result;
-    }
-
-    public function validateDispatch($frais = 0) {
-        $dispatch = $this->simulateDispatch($frais);
-
-        foreach ($dispatch as $d) {
-            $this->model->saveAttribution($d['don_id'], $d['id_besoin'], $d['attribue']);
-        }
-
-        return count($dispatch) . " attributions validées";
+        return $count . " attributions validées et enregistrées dans l'historique.";
     }
 }
