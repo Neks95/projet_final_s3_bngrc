@@ -119,7 +119,19 @@ class Dispatch
             unset($don);
         }
 
-        return ['dispatch' => $dispatch];
+        // Calcul des dons restants par type
+        $donsRestants = [];
+        foreach ($donsParType as $typeId => $dons_list) {
+            $donsRestants[$typeId] = [];
+            foreach ($dons_list as $d) {
+                $donsRestants[$typeId][] = [
+                    'id_don' => $d['id_don'],
+                    'qte' => $d['stock_restant']
+                ];
+            }
+        }
+
+        return ['dispatch' => $dispatch, 'donsRestants' => $donsRestants];
     }
 
     public function saveAttribution($idDon, $idBesoin, $qte, $dateMvt)
