@@ -1,4 +1,5 @@
 RewriteEngine On
+RewriteBase /ETU004277/projet_final_s3_bngrc/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
