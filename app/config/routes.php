@@ -170,21 +170,38 @@ $router->group('', function (Router $router) use ($app) {
 	$router->post('/villes/ajouter', [VilleController::class, 'insertVille']);
 
 
-	Flight::route('/dispatch', function () {
-		$controller = new DispatchController();
-		$dispatch = $controller->simulateDispatch();
+	// Flight::route('/dispatch', function () {
+	// 	$controller = new DispatchController();
+	// 	$dispatch = $controller->simulateDispatch();
 
-		Flight::render('dispatch', ['dispatch' => $dispatch]);
-	});
+	// 	Flight::render('dispatch', ['dispatch' => $dispatch]);
+	// });
 
-	Flight::route('POST /dispatch/valider', function () {
-		header('Content-Type: application/json; charset=utf-8');
-		$controller = new DispatchController();
-		try {
-			$message = $controller->validateDispatch();
-			echo json_encode(['success' => true, 'message' => $message]);
-		} catch (Exception $e) {
-			echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-		}
-	});
+	// Flight::route('POST /dispatch/valider', function () {
+	// 	header('Content-Type: application/json; charset=utf-8');
+	// 	$controller = new DispatchController();
+	// 	try {
+	// 		$message = $controller->validateDispatch();
+	// 		echo json_encode(['success' => true, 'message' => $message]);
+	// 	} catch (Exception $e) {
+	// 		echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+	// 	}
+	// });
+
+	Flight::route('GET /dispatch/simuler', function() {
+    $controller = new \app\controllers\DispatchController();
+    $controller->simulateDispatch();
+    // Flight::stop() est déjà appelé dans le contrôleur
+});
+
+Flight::route('POST /dispatch/valider', function() {
+    $controller = new \app\controllers\DispatchController();
+    $controller->validateDispatch();
+    // Flight::stop() est déjà appelé dans le contrôleur
+});
+
+Flight::route('GET /dispatch', function() {
+    Flight::render('dispatch'); // Ceci inclut modele.php
+});
+
 }, [SecurityHeadersMiddleware::class]);
