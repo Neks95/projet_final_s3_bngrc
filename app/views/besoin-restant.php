@@ -88,8 +88,8 @@ ob_start();
               <td class="text-end"><?= $fmt_prix ?></td>
               <td class="text-end"><?= $fmt_valeur_restant ?></td>
               <td class="text-center">
-                <?php if ($unite === 'ar'): ?>
-                  <span class="text-muted small">Monétaire</span>
+                <?php if ($unite === 'Ar'): ?>
+                  <span class="text-muted small">Monetaire</span>
                 <?php else: ?>
                   <button type="button"
                     class="btn btn-sm btn-outline-primary btn-acheter"
