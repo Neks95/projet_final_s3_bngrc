@@ -41,14 +41,26 @@ ob_start();
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
+
+
                         <a href="<?= $base_url ?>gestion_don" class="btn btn-secondary">
                             <i class="bi bi-x-circle"></i> Annuler
                         </a>
+
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-circle"></i> Enregistrer
                         </button>
                     </div>
+
                 </form>
+
+                         <a href="<?= $base_url ?>gestion_don" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left"></i> Revenir
+                        </a>
+
+                        <a href="<?= $base_url ?>dispatch" class="btn btn-outline-primary">
+                            <i class="bi bi-graph-up"></i> Simulation
+                        </a>
             </div>
         </div>
     </div>
@@ -96,8 +108,12 @@ ob_start();
                     <button id="submitAddTypeBtn" type="submit" class="btn btn-primary">Ajouter</button>
                 </div>
             </form>
+
+ 
         </div>
     </div>
+ 
+
 </div>
 
 <!-- Bootstrap JS -->

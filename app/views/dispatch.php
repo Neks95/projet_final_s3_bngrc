@@ -1,5 +1,7 @@
 <?php
 $base = Flight::get('flight.base_url');
+$base_url = Flight::get('flight.base_url'); 
+
 use app\models\Dispatch;
 
 $dispatchModel = new Dispatch();
@@ -24,6 +26,13 @@ ob_start();
         <button id="btnValider" class="btn btn-primary ms-2" style="display: none;">
             <i class="bi bi-check-circle"></i> Valider le Dispatch
         </button>
+            <a href="<?= $base_url ?>ajout_don" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Ajouter un Don
+            </a>
+            <a href="<?= $base_url ?>ajout_besoin" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Ajouter un Besoin
+            </a>
+
     </div>
 
     <div id="tableDispatch" style="display: none;">
