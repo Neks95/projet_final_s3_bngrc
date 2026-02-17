@@ -1,6 +1,5 @@
 <?php
 
-use app\controllers\ApiExampleController;
 use app\controllers\BesoinVilleController;
 use app\controllers\CategorieController;
 use app\middlewares\SecurityHeadersMiddleware;
@@ -15,6 +14,7 @@ use app\controllers\DispatchController;
 use app\models\AchatService;
 use app\models\PurchaseService;
 use app\models\Utils;
+use app\controllers\HistoriqueController;
 
 /** 
  * @var Router $router 
@@ -97,8 +97,6 @@ $router->group('', function (Router $router) use ($app) {
 	});
 
 
-
-
 	$router->post('/ajout_type', function () {
 		$controller = new TypeBesoinController();
 		$controller->create();
@@ -130,11 +128,6 @@ $router->group('', function (Router $router) use ($app) {
 		$controller->insert();
 	});
 
-	$router->get('/hello-world/@name', function ($name) {
-		echo '<h1>Hello world! Oh hey ' . $name . '!</h1>';
-	});
-
-
 	$router->get('/villes', function () use ($app) {
 		$app->render('villes');
 	});
@@ -145,14 +138,13 @@ $router->group('', function (Router $router) use ($app) {
 
 
 
+	$router->get('/rapports', function () use ($app) {
+		$app->render('rapports');
+	});
+
+	$router->get('/api/recapitulatif', [HistoriqueController::class, 'getRecapJson']);
 
 	$router->post('/villes/ajouter', [VilleController::class, 'insertVille']);
-
-	$router->group('/api', function () use ($router) {
-		$router->get('/users', [ApiExampleController::class, 'getUsers']);
-		$router->get('/users/@id:[0-9]', [ApiExampleController::class, 'getUser']);
-		$router->post('/users/@id:[0-9]', [ApiExampleController::class, 'updateUser']);
-	});
 
 
 	Flight::route('/dispatch', function () {
