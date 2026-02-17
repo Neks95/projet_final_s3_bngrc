@@ -48,13 +48,6 @@ class Dispatch
     }
 
 
-    private function calculerMontant(float $attribue, array $besoin, float $frais): float {
-        if (strtolower($besoin['nom_type']) === 'argent') {
-            return $attribue; // La quantité attribuée EST le montant
-        }
-        return $attribue * (float)$besoin['prix_unitaire'] * (1 + $frais / 100);
-    }
-
     public function simulateDispatchParVille(float $frais = 0.0): array {
         $besoins = $this->getBesoinsPrioritaires();
         $dons = $this->getDonsDisponibles();
@@ -100,7 +93,7 @@ class Dispatch
                 $besoinRestant -= $attribue;
                 $don['stock_restant'] -= $attribue;
 
-                $montant = $this->calculerMontant($attribue, $b, $frais);
+                $montant = $attribue * (float)$b['prix_unitaire'] * (1 + $frais / 100);
 
                 $resteGlobalType = 0;
                 foreach ($donsParType[$typeId] as $d_row) {
@@ -139,11 +132,12 @@ class Dispatch
         return ['dispatch' => $dispatch, 'donsRestants' => $donsRestants];
     }
 
+   
     public function simulateDispatchPlusPetit(float $frais = 0.0): array {
         $besoins = $this->getBesoinsPrioritaires();
         $dons = $this->getDonsDisponibles();
 
-        // Trier les besoins par quantité restante croissante
+        // Trier les besoins par quantité restante croissante (plus petit d'abord)
         usort($besoins, function($a, $b) {
             return (float)$a['besoin_restant'] - (float)$b['besoin_restant'];
         });
@@ -189,7 +183,7 @@ class Dispatch
                 $besoinRestant -= $attribue;
                 $don['stock_restant'] -= $attribue;
 
-                $montant = $this->calculerMontant($attribue, $b, $frais);
+                $montant = $attribue * (float)$b['prix_unitaire'] * (1 + $frais / 100);
 
                 $resteGlobalType = 0;
                 foreach ($donsParType[$typeId] as $d_row) {
@@ -228,10 +222,27 @@ class Dispatch
         return ['dispatch' => $dispatch, 'donsRestants' => $donsRestants];
     }
 
+    // =============================================
+    // MODE 3 : Priorité par Proportionnalité
+    // =============================================
+    /**
+     * Pour chaque type de besoin :
+     *   1. Calculer la somme totale des besoins restants de toutes les villes
+     *   2. Calculer le stock total disponible pour ce type
+     *   3. Chaque ville reçoit : floor(besoin_restant_ville / somme_besoins * stock_total)
+     *   4. On distribue le reste au besoin si nécessaire (non attribué car arrondi)
+     *
+     * Exemple : Tana=3, Toamasina=4, Majunga=6, total=13, don=100
+     *   Tana   → floor(3/13 * 100) = floor(23.07) = 23
+     *   Toamasina → floor(4/13 * 100) = floor(30.76) = 30
+     *   Majunga   → floor(6/13 * 100) = floor(46.15) = 46
+     *   Total attribué = 99, reste = 1 (non distribué à cause de l'arrondi)
+     */
     public function simulateDispatchProportionnel(float $frais = 0.0): array {
         $besoins = $this->getBesoinsPrioritaires();
         $dons = $this->getDonsDisponibles();
 
+        // Indexer les dons par type et calculer le stock total par type
         $donsParType = [];
         $stockTotalParType = [];
         foreach ($dons as $d) {
@@ -245,6 +256,7 @@ class Dispatch
             $stockTotalParType[$d['id_type']] += $d['stock_restant'];
         }
 
+        // Regrouper les besoins par type et calculer la somme des besoins par type
         $besoinsParType = [];
         $sommeBesoinParType = [];
         foreach ($besoins as $b) {
@@ -263,45 +275,24 @@ class Dispatch
         foreach ($besoinsParType as $typeId => $besoinsDuType) {
             $sommeBesoin = $sommeBesoinParType[$typeId];
             $stockDispo = $stockTotalParType[$typeId] ?? 0;
+
             $stockADistribuer = min($stockDispo, $sommeBesoin);
 
-            // PHASE 1 : Calculer les attributions avec round()
-            $attributions = [];
-            $totalAttribue = 0;
-
+            $attributions = []; 
             foreach ($besoinsDuType as $index => $b) {
                 $besoinRestant = (float)$b['besoin_restant'];
 
                 if ($sommeBesoin > 0) {
-                    $attribue = (int)round(($besoinRestant / $sommeBesoin) * $stockADistribuer);
+                    $attribue = (int)floor(($besoinRestant / $sommeBesoin) * $stockADistribuer);
                     $attribue = min($attribue, (int)$besoinRestant);
                 } else {
                     $attribue = 0;
                 }
 
                 $attributions[$index] = $attribue;
-                $totalAttribue += $attribue;
             }
 
-            // PHASE 2 : Correction si round() a sur-attribué
-            if ($totalAttribue > $stockADistribuer) {
-                $excedent = $totalAttribue - (int)$stockADistribuer;
-
-                $indices = array_keys($attributions);
-                usort($indices, function($a, $b) use ($attributions) {
-                    return $attributions[$b] - $attributions[$a];
-                });
-
-                foreach ($indices as $idx) {
-                    if ($excedent <= 0) break;
-                    if ($attributions[$idx] > 0) {
-                        $attributions[$idx]--;
-                        $excedent--;
-                    }
-                }
-            }
-
-            // PHASE 3 : Distribution concrète depuis les dons (FIFO)
+           
             $donsLocaux = $donsParType[$typeId] ?? [];
 
             foreach ($besoinsDuType as $index => $b) {
@@ -342,7 +333,7 @@ class Dispatch
                     $resteAAttribuer -= $pris;
                     $don['stock_restant'] -= $pris;
 
-                    $montant = $this->calculerMontant($pris, $b, $frais);
+                    $montant = $pris * (float)$b['prix_unitaire'] * (1 + $frais / 100);
 
                     $resteGlobalType = 0;
                     foreach ($donsLocaux as $d_row) {

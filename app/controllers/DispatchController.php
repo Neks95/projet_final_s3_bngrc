@@ -12,11 +12,9 @@ class DispatchController {
         $this->model = new Dispatch();
     }
 
-    /**
-     * Lance la simulation selon le mode choisi et retourne les résultats en JSON
-     */
+   
     public function simulateDispatch() {
-        // Nettoyer tout output buffer existant pour éviter le HTML parasite
+        
         while (ob_get_level()) {
             ob_end_clean();
         }

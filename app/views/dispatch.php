@@ -15,9 +15,9 @@ ob_start();
     <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
         <label for="modeSimulation" class="form-label mb-0">Mode de Simulation :</label>
         <select id="modeSimulation" class="form-select w-auto d-inline-block">
-            <option value="date">Priorité par Date</option>
-            <option value="plusPetit">Priorité par le Plus Petit</option>
-            <option value="proportion">Priorité par Proportionnalité</option>
+            <option value="date">Priorite par Date</option>
+            <option value="plusPetit">Priorite par le plus Petit</option>
+            <option value="proportion">Priorite par Proportionnalite</option>
         </select>
 
         <button id="btnSimuler" class="btn btn-success">
@@ -37,7 +37,6 @@ ob_start();
         </button>
     </div>
 
-    <!-- Spinner de chargement -->
     <div id="loadingSpinner" class="text-center my-4" style="display: none;">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Chargement...</span>
@@ -59,7 +58,7 @@ ob_start();
                                 <th>Ville</th>
                                 <th>Type de Besoin</th>
                                 <th>Besoin Initial</th>
-                                <th>Quantité Attribuée</th>
+                                <th>Quantite Attribuee</th>
                                 <th>Montant (Ar)</th>
                                 <th>Reste Don</th>
                             </tr>
@@ -110,7 +109,6 @@ ob_start();
             dispatchData.forEach(d => {
                 const row = document.createElement('tr');
 
-                // Mettre en évidence les lignes sans attribution
                 if (d.attribue === 0) {
                     row.classList.add('table-warning');
                 }
@@ -129,13 +127,9 @@ ob_start();
             btnValider.style.display = 'inline-block';
         }
 
-        // =============================================
-        // SIMULER : appel AJAX GET vers le backend
-        // =============================================
         btnSimuler.addEventListener('click', function() {
             const mode = modeSelect.value;
 
-            // Afficher le spinner, masquer le tableau
             loadingSpinner.style.display = 'block';
             tableContainer.style.display = 'none';
             btnSimuler.disabled = true;
@@ -164,9 +158,7 @@ ob_start();
                 });
         });
 
-        // =============================================
-        // VALIDER : appel AJAX POST vers le backend
-        // =============================================
+        
         btnValider.addEventListener('click', function() {
             if (!confirm("Confirmer la validation du dispatch ?")) return;
 
@@ -196,9 +188,7 @@ ob_start();
                 });
         });
 
-        // =============================================
-        // REVENIR : restaurer l'état initial
-        // =============================================
+      
         retour.addEventListener('click', function() {
             if (!confirm("Confirmer le retour à l'état initial ?")) return;
 
