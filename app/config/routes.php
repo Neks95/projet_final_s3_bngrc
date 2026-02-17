@@ -1,6 +1,5 @@
 <?php
 
-use app\controllers\ApiExampleController;
 use app\controllers\BesoinVilleController;
 use app\controllers\CategorieController;
 use app\middlewares\SecurityHeadersMiddleware;
@@ -12,6 +11,7 @@ use app\controllers\TypeBesoinController;
 use app\controllers\VilleController;
 use app\controllers\DashboardController;
 use app\controllers\DispatchController;
+use app\controllers\HistoriqueController;
 
 /** 
  * @var Router $router 
@@ -21,15 +21,10 @@ use app\controllers\DispatchController;
 // This wraps all routes in the group with the SecurityHeadersMiddleware
 $router->group('', function (Router $router) use ($app) {
 
-	
-	// $router->get('/', function() use ($app) {
-	// 	$app->render('index');
-	// });
-	
-		
+
 	$router->get('/', [DashboardController::class, 'index']);
 
-	
+
 	$router->get('/test', function () {
 		$db = Flight::db();
 		var_dump($db->query("SELECT version()")->fetch());
@@ -51,7 +46,7 @@ $router->group('', function (Router $router) use ($app) {
 		$villeController = new VilleController();
 		$typeController  = new TypeBesoinController();
 		$categorieController = new CategorieController();
-		$cat = $categorieController ->getAll();
+		$cat = $categorieController->getAll();
 		$villes = $villeController->getAllVille();
 		$types  = $typeController->getAllType();
 		Flight::render('besoin-ajouter', [
@@ -65,14 +60,12 @@ $router->group('', function (Router $router) use ($app) {
 		$typeController  = new TypeBesoinController();
 		$types  = $typeController->getAllType();
 		$categorieController = new CategorieController();
-		$cat = $categorieController ->getAll();
+		$cat = $categorieController->getAll();
 		Flight::render('don-ajouter', [
 			'type' => $types,
 			'categorie' => $cat
 		]);
 	});
-
-
 
 
 	$router->post('/ajout_type', function () {
@@ -89,11 +82,6 @@ $router->group('', function (Router $router) use ($app) {
 		$controller->insert();
 	});
 
-	$router->get('/hello-world/@name', function ($name) {
-		echo '<h1>Hello world! Oh hey ' . $name . '!</h1>';
-	});
-
-
 	$router->get('/villes', function () use ($app) {
 		$app->render('villes');
 	});
@@ -101,24 +89,21 @@ $router->group('', function (Router $router) use ($app) {
 	$router->get('/villes/ajouter', function () use ($app) {
 		$app->render('ville-ajouter');
 	});
-	
 
 
+	$router->get('/rapports', function () use ($app) {
+		$app->render('rapports');
+	});
+
+	$router->get('/api/recapitulatif', [HistoriqueController::class, 'getRecapJson']);
 
 	$router->post('/villes/ajouter', [VilleController::class, 'insertVille']);
 
-	$router->group('/api', function () use ($router) {
-		$router->get('/users', [ApiExampleController::class, 'getUsers']);
-		$router->get('/users/@id:[0-9]', [ApiExampleController::class, 'getUser']);
-		$router->post('/users/@id:[0-9]', [ApiExampleController::class, 'updateUser']);
+
+	Flight::route('/dispatch', function () {
+		$controller = new DispatchController();
+		$dispatch = $controller->simulateDispatch();
+
+		Flight::render('dispatch', ['dispatch' => $dispatch]);
 	});
-
-
-Flight::route('/dispatch', function() {
-	$controller = new DispatchController();
-	$dispatch = $controller->simulateDispatch();
-
-	Flight::render('dispatch', ['dispatch' => $dispatch]);
-});
-
 }, [SecurityHeadersMiddleware::class]);
