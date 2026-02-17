@@ -12,6 +12,9 @@ use app\controllers\TypeBesoinController;
 use app\controllers\VilleController;
 use app\controllers\DashboardController;
 use app\controllers\DispatchController;
+use app\models\AchatService;
+use app\models\PurchaseService;
+use app\models\Utils;
 
 /** 
  * @var Router $router 
@@ -21,15 +24,15 @@ use app\controllers\DispatchController;
 // This wraps all routes in the group with the SecurityHeadersMiddleware
 $router->group('', function (Router $router) use ($app) {
 
-	
+
 	// $router->get('/', function() use ($app) {
 	// 	$app->render('index');
 	// });
-	
-		
+
+
 	$router->get('/', [DashboardController::class, 'index']);
 
-	
+
 	$router->get('/test', function () {
 		$db = Flight::db();
 		var_dump($db->query("SELECT version()")->fetch());
@@ -41,6 +44,27 @@ $router->group('', function (Router $router) use ($app) {
 		Flight::render('besoins', ['besoin' => $besoin]);
 	});
 
+	$router->get('/besoins_reste', function () {
+		$controller = new BesoinVilleController();
+		$villeController = new VilleController();
+		$villes = $villeController->getAllVille();
+
+		$selectedVille = null;
+		if (isset($_GET['ville']) && $_GET['ville'] !== '' && $_GET['ville'] !== '0') {
+			$selectedVille = (int)$_GET['ville'];
+		}
+
+		$besoin = $controller->getBesoinsRestant($selectedVille);
+
+		Flight::render('besoin-restant', [
+			'besoin' => $besoin,
+			'ville' => $villes,
+			'selectedVille' => $selectedVille
+		]);
+	});
+
+
+
 	$router->get('/gestion_don', function () {
 		$controller = new DonController();
 		$dons = $controller->getAll();
@@ -51,7 +75,7 @@ $router->group('', function (Router $router) use ($app) {
 		$villeController = new VilleController();
 		$typeController  = new TypeBesoinController();
 		$categorieController = new CategorieController();
-		$cat = $categorieController ->getAll();
+		$cat = $categorieController->getAll();
 		$villes = $villeController->getAllVille();
 		$types  = $typeController->getAllType();
 		Flight::render('besoin-ajouter', [
@@ -65,7 +89,7 @@ $router->group('', function (Router $router) use ($app) {
 		$typeController  = new TypeBesoinController();
 		$types  = $typeController->getAllType();
 		$categorieController = new CategorieController();
-		$cat = $categorieController ->getAll();
+		$cat = $categorieController->getAll();
 		Flight::render('don-ajouter', [
 			'type' => $types,
 			'categorie' => $cat
@@ -79,6 +103,23 @@ $router->group('', function (Router $router) use ($app) {
 		$controller = new TypeBesoinController();
 		$controller->create();
 	});
+
+	$router->post('/acheter', function () {
+    header('Content-Type: application/json; charset=utf-8');
+    $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+    $id_besoin = isset($input['id_besoin']) ? (int)$input['id_besoin'] : 0;
+    $qte_demande = isset($input['qte']) ? (float)$input['qte'] : 0;
+
+    $db = Flight::db();
+    $utils = new Utils($db);
+    $service = new AchatService($db, $utils);
+
+    $result = $service->processPurchase($id_besoin, $qte_demande);
+
+    http_response_code($result['status']);
+    echo json_encode($result['body']);
+    return;
+});
 	$router->post('/ajouter_besoin', function () {
 		$controller = new BesoinVilleController();
 		$controller->insererBesoin();
@@ -101,7 +142,7 @@ $router->group('', function (Router $router) use ($app) {
 	$router->get('/villes/ajouter', function () use ($app) {
 		$app->render('ville-ajouter');
 	});
-	
+
 
 
 
@@ -114,11 +155,10 @@ $router->group('', function (Router $router) use ($app) {
 	});
 
 
-Flight::route('/dispatch', function() {
-	$controller = new DispatchController();
-	$dispatch = $controller->simulateDispatch();
+	Flight::route('/dispatch', function () {
+		$controller = new DispatchController();
+		$dispatch = $controller->simulateDispatch();
 
-	Flight::render('dispatch', ['dispatch' => $dispatch]);
-});
-
+		Flight::render('dispatch', ['dispatch' => $dispatch]);
+	});
 }, [SecurityHeadersMiddleware::class]);

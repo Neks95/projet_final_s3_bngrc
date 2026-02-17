@@ -61,6 +61,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <li class="nav-item">
                         <a class="nav-link" href="<?= $base ?>rapports">Rapports</a>
                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="<?= $base ?>besoins_reste">Reste des besoins</a>
+                    </li>
                 </ul>
                 <div class="ms-3 text-white small" id="current-datetime"></div>
             </div>

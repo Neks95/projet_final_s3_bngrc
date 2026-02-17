@@ -18,14 +18,15 @@ class BesoinVilleController{
         $qt = $_POST['quantite'];
         $model ->insert($ville,$type,$qt);
         Flight::redirect('/gestion_besoin');
-
-
-        
-
-
-        
-
     }
+
+     public function getBesoinsRestant($id_ville = null)
+    {
+        $model = new besoinVille(Flight::db());
+        return $model->getBesoinsRestant($id_ville);
+    }
+
+   
 
 }
 

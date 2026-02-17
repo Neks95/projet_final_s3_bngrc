@@ -1,17 +1,20 @@
-<?php 
+<?php
 
 namespace app\models;
 
 use PDO;
 
-class besoinVille {
+class besoinVille
+{
     private $db;
 
-    function __construct($db) {
+    function __construct($db)
+    {
         $this->db = $db;
     }
 
-    function getAll() {
+    function getAll()
+    {
         $sql = "SELECT 
                 b.id,
                 b.id_ville,
@@ -35,7 +38,8 @@ class besoinVille {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function getById($id) {
+    function getById($id)
+    {
         $sql = "SELECT 
                 b.*,
                 v.nom AS ville,
@@ -54,7 +58,8 @@ class besoinVille {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    function getByVille($id_ville) {
+    function getByVille($id_ville)
+    {
         $sql = "SELECT 
                 b.*,
                 t.nom_type,
@@ -71,34 +76,35 @@ class besoinVille {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function insert($id_ville, $id_type, $qte_besoin_ville) {
-       
-        
+    function insert($id_ville, $id_type, $qte_besoin_ville)
+    {
+
+
         $sql = "INSERT INTO besoin (id_ville, id_type, qte_besoin_ville,date_saisie) 
                 VALUES ( ?, ? , ? ,NOW())";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id_ville,$id_type,$qte_besoin_ville]);
+        $stmt->execute([$id_ville, $id_type, $qte_besoin_ville]);
         return $this->db->lastInsertId();
     }
 
 
 
     // Statistiques par ville
-    function getStatsByVille() {
-        $sql = "SELECT 
-                v.id,
-                v.nom AS ville,
-                v.region,cb
-                COUNT(b.id) AS nb_besoins,
-                SUM(b.qte_besoin_ville * b.prix_unitaire) AS valeur_totale,
-                SUM(IFNULL(h.qte, 0) * b.prix_unitaire) AS valeur_satisfaite
-                FROM ville v
-                LEFT JOIN besoin b ON v.id = b.id_ville
-                LEFT JOIN historique h ON b.id = h.id_besoin
-                GROUP BY v.id
-                ORDER BY valeur_totale DESC";
-        $stmt = $this->db->query($sql);
+
+    public function getBesoinsRestant($id_ville = null)
+    {
+        $sql = "SELECT * FROM view_besoins_restants WHERE qte_restant > 0";
+        $params = [];
+
+        if (!empty($id_ville)) {
+            $sql .= " AND id_ville = ?";
+            $params[] = (int)$id_ville;
+        }
+        $sql .= " ORDER BY qte_restant DESC, qte_demande DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 }
-?>
